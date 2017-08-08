@@ -1,0 +1,59 @@
+<div id="node-doubleclick-modal" class="modal fade" tabindex="-1">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button id="modal-close-button" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h1 class="center bigger-200 lighter grey no-margin">Title</h1>
+			</div>
+
+			<div class="modal-body">
+				<div class="row center">
+					<button id="import-acl-button" class="btn btn-app btn-grey btn-xs">Import<br>ACL</button>
+					<button id="export-acl-button" class="btn btn-app btn-grey btn-xs">Export<br>ACL</button>
+				</div>
+				
+
+
+				<div class="tabbable tabs-left">
+					<ul class="nav nav-tabs" id="myTab3">
+						<li class="active"><a data-toggle="tab" href="#eth0" aria-expanded="true">eth0</a></li>
+						<li><a id="tab-add-button" type="button" href="#" aria-expanded="true">
+							<i class="ace-icon fa fa-plus"></i>
+						</a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div id="eth0" class="tab-pane active">
+							<table class="table table-bordered table-hover">
+								<thead>
+									<tr>
+										<th>In/Out</th>
+										<th>Order</th>
+										<th>Protocol</th>
+										<th>Src IP</th>
+										<th>Dest IP</th>
+										<th>Flag</th>
+										<th>Action</th>
+									</tr>
+								</thead>
+								<tbody></tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div class="modal-footer">
+				<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
+					<i class="ace-icon fa fa-times"></i>
+					Close
+				</button>
+				<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
+					<i class="ace-icon fa fa-check"></i>
+					Confirm
+				</button>
+			</div>
+		</div><!-- /.modal-content -->
+	</div>
+</div>	

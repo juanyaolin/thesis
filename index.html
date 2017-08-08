@@ -56,7 +56,7 @@
 					<a href="index.html" class="navbar-brand">
 						<small>
 							<i class="fa fa-desktop"></i>
-							Juan
+							&#160;&#160;&#160;Juan
 						</small>
 					</a>
 				</div>
@@ -74,29 +74,121 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-								<div id="topo-row" class="row">
-									<div id="topo-block" class="block">
-										<div class="block-header"><i class="fa fa-laptop"></i>Topology</div><!-- /.block-header -->
-										<div class="block-body">
-											<input id="topo-input" type="file" data-show-preview="false">
-											<!-- <div id="topo-diagram" style="border:solid 1px black; width:100%; height:400px"></div> -->
-										</div><!-- /.block-body -->
-									</div><!-- /.topo-block -->
-								</div><!-- /.topo-row -->
+								<div id="page-header" >
+									<div id="topo-content">
+										<div id="topo-header" class="block-header" style="font-size: 35px; padding-top: 8px; padding-bottom: 8px; font-weight: bold;" align="center">
+											<div class="row">
+												<span><i class="fa fa-television"></i>&#160;&#160;Topology</span>
+												
+											
+												<span style="float: right">
+													
+													<!-- <a href="#node-doubleclick-modal" role="button" class="btn btn-app btn-grey btn-xs" data-toggle="modal">
+														<i class="ace-icon fa fa-floppy-o bigger-160"></i>
+														Modal
+													</a> -->
+													
+													<button id="project-load-button" class="btn btn-app btn-grey btn-xs">
+														<i class="ace-icon fa fa-file-text-o bigger-100"></i>
+														Load
+													</button>
+													<button id="project-save-button" class="btn btn-app btn-grey btn-xs">
+														<i class="ace-icon fa fa-floppy-o bigger-100"></i>
+														Save
+													</button>
+													<button id="setting" class="btn btn-app btn-grey btn-xs">
+														<i class="ace-icon fa fa-cog bigger-100"></i>
+														Setting
+													</button>
+													<button id="show-object" class="btn btn-app btn-grey btn-xs">
+														<i class="ace-icon fa fa-print bigger-100"></i>
+														Show
+													</button>
+												</span>
 
+											</div>
+										</div>
+										<br>
+										<div id="topo-body">
+											<div id="topo-function" class="col-sm-1 widget-box" style="width: 7%; height:400px" align="center">
+												<!-- <div id="topo-palette" class="hidden" style="height:250px"></div> -->
+												
+												<div data-toggle="buttons" class="btn-group"  align="center" >
+													<label id="topo-pointer-button" class="btn btn-grey btn-default btn-round active" style="width: 90%">
+														<input name="function-button" type="radio" value="pointer">
+														<i class="ace-icon icon-only fa fa-mouse-pointer fa-2x"></i><br>
+														Pointer
+													</label>
+													<label id="topo-firewall-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
+														<input name="function-button" type="radio" value="firewall">
+														<i class="ace-icon icon-only fa fa-calendar fa-2x"></i><br>
+														Firewall
+													</label>
+													<label id="topo-network-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
+														<input name="function-button" type="radio" value="network">
+														<i class="ace-icon icon-only fa fa-cloud fa-2x"></i><br>
+														Netwok
+													</label>
+													<label id="topo-link-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
+														<input name="function-button" type="radio" value="link">
+														<i class="ace-icon icon-only fa fa-arrows-h fa-2x"></i><br>
+														Link
+													</label>
+												</div>
 
+												<!-- <button id="topo-pointer-button" class="btn btn-app btn-grey btn-xs ">
+													<i class="ace-icon fa fa-mouse-pointer bigger-160"></i>Pointer
+												</button>
+												<button id="topo-firewall-button" class="btn btn-app btn-grey btn-xs ">
+													<i class="ace-icon fa fa-calendar bigger-160"></i>Firewall
+												</button>
+												<button id="topo-network-button" class="btn btn-app btn-grey btn-xs ">
+													<i class="ace-icon fa fa-cloud bigger-160"></i>Network
+												</button>
+												<button id="topo-link-button" class="btn btn-app btn-grey btn-xs " data-toggle="button" aria-pressed="false">
+													<i class="ace-icon fa fa-arrows-h bigger-160"></i>Link
+												</button> -->
+												<!-- <button id="topo-inspect-button" class="btn  btn-grey btn-xs" data-toggle="button" aria-pressed="false">
+													<i class="ace-icon fa fa-arrows-h bigger-160"></i>LinkTest</button> -->
+												<!-- <button id="topo-inspect-button" class="btn btn-app btn-grey btn-xs disabled">
+													<i class="ace-icon fa fa-caret-square-o-right bigger-160"></i>Inspect
+												</button> -->
+												<!-- <div id="topo-button" style="height:140px"></div> -->
+											</div>
+											<div id="topo-diagram" class="col-sm-11 widget-box" style="width: 92%; height:400px"></div>
+											<!-- <div id="topo-button" class="col-sm-2 widget-box" style="height:400px"></div> -->
+											<!-- <div class="col-sm-2 widget-box" style="height:400px">
+												<div id="topo-diagram-status" style="height:100px"></div>
+												<div id="topo-palette-status" style="height:100px"></div>
+											</div> -->
+										</div>
+									</div>
+									
+								</div>
+								<div id="page-body">
+									
+								</div>
 
+								<!-- /.modal-dialog -->
+
+								<!-- <div id="mypage-content">
+									<div id="mypage-header" class="block-header"><i class="fa fa-laptop"></i>&#160;&#160;Topology</div>
+									<input id="topo-input" type="file" data-show-preview="false">
+									<div id="mypage-body">
+
+									</div>
+								</div> -->
 
 
 
 								<!-- <hr> -->
 
-								<div class="hr hr32 hr-dotted"></div>
+								<!-- <div class="hr hr32 hr-dotted"></div>
 
 								<div class="block-header" align="center">
 									<i class="fa fa-laptop"></i>
 									Flow Graph
-								</div><!-- /.block-header -->
+								</div> --><!-- /.block-header -->
 
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
@@ -109,6 +201,107 @@
 				<i class="ace-icon fa fa-angle-double-up icon-only bigger-110"></i>
 			</a>
 		</div><!-- /.main-container -->
+
+		<div id="node-doubleclick-modal" class="modal fade" tabindex="-1">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button id="modal-close-button" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="center bigger-200 lighter grey no-margin">Load</h1>
+					</div>
+
+					<div class="modal-body">
+						<div class="row center">
+							<button id="import-acl-button" class="btn btn-app btn-grey btn-xs">Import<br>ACL</button>
+							<button id="export-acl-button" class="btn btn-app btn-grey btn-xs">Export<br>ACL</button>
+						</div>
+						
+
+
+						<div class="tabbable tabs-left">
+							<ul class="nav nav-tabs" id="myTab3">
+								<li class="active"><a data-toggle="tab" href="#eth0" aria-expanded="true">eth0</a></li>
+								<li><a data-toggle="tab" href="#eth1" aria-expanded="true">eth1</a></li>
+								<li><a id="tab-add-button" type="button" href="#" aria-expanded="true">+
+									
+									<i class="ace-icon fa fa-times"><input type="button"></i>
+								</a></li>
+							</ul>
+
+							<div class="tab-content">
+								<div id="eth0" class="tab-pane active">
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>In/Out</th>
+												<th>Order</th>
+												<th>Protocol</th>
+												<th>Src IP</th>
+												<th>Dest IP</th>
+												<th>Flag</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody></tbody>
+									</table>
+								</div>
+
+								<div id="eth1" class="tab-pane">
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>In/Out</th>
+												<th>Order</th>
+												<th>Protocol</th>
+												<th>Src IP</th>
+												<th>Dest IP</th>
+												<th>Flag</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody></tbody>
+									</table>
+								</div>
+
+							</div>
+						</div>
+						
+					</div>
+
+					<div class="modal-footer">
+						<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
+							<i class="ace-icon fa fa-times"></i>
+							Close
+						</button>
+					</div>
+				</div><!-- /.modal-content -->
+			</div>
+		</div>
+
+
+		<!-- <div id="save-button" class="modal fade" tabindex="-1">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h1 class="smaller lighter grey no-margin">Save</h1>
+					</div>
+
+					<div class="modal-body">
+						Some content
+						1
+						2
+					</div>
+
+					<div class="modal-footer">
+						<button class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
+							<i class="ace-icon fa fa-times"></i>
+							Close
+						</button>
+					</div>
+				</div>
+			</div>
+		</div> -->
 
 
 		<!-- Insert this line above script imports  -->
@@ -147,6 +340,8 @@
 
 		<!-- inline scripts related to this page -->
 		<script src="assets/plugins/fileinput/js/fileinput.min.js"></script>
+		<script src="GoJS-master/release/go-debug.js"></script>
+		<script src="GoJS-master/extensions/Robot.js"></script>
 		<script type="text/javascript">
 			require('./renderer.js')
 		</script>

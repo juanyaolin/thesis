@@ -1,4 +1,1 @@
-eth0 140.134.0.0/16 50
-eth1 129.37.0.0/16 50
-eth2 192.168.0.0/24 50
-eth3 0.0.0.0/0 2
+{"filepath":"D:\\Dropbox\\Programming\\thesis\\test.txt","nodeDataArray":[{"key":"firewall1","category":"firewall","label":"firewall1","__gohashid":438},{"key":"firewall2","category":"firewall","label":"firewall2","__gohashid":468},{"key":"firewall3","category":"firewall","label":"firewall3","__gohashid":492},{"key":"network1","category":"network","label":"network1","__gohashid":516},{"key":"network2","category":"network","label":"network2","__gohashid":542},{"key":"network3","category":"network","label":"network3","__gohashid":566}],"linkDataArray":[{"category":"link","text":"link","__gohashid":677,"from":"network1","to":"firewall1"},{"category":"link","text":"link","__gohashid":856,"from":"network3","to":"firewall2"},{"category":"link","text":"link","__gohashid":1088,"from":"network2","to":"firewall3"},{"category":"link","text":"link","__gohashid":1517,"from":"firewall3","to":"firewall2"},{"category":"link","text":"link","__gohashid":1806,"from":"firewall2","to":"firewall1"},{"category":"link","text":"link","__gohashid":2125,"from":"firewall1","to":"firewall3"}],"count":0}
