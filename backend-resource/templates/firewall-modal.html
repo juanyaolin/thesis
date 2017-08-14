@@ -1,4 +1,4 @@
-<div id="node-doubleclick-modal" class="modal fade" tabindex="-1">
+<div id="firewall-doubleclick-modal" class="modal fade" tabindex="-1">
 	<div class="modal-dialog modal-lg">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -15,14 +15,14 @@
 
 
 				<div class="tabbable tabs-left">
-					<ul class="nav nav-tabs" id="myTab3">
+					<ul id="acl-tabs" class="nav nav-tabs">
 						<li class="active"><a data-toggle="tab" href="#eth0" aria-expanded="true">eth0</a></li>
-						<li><a id="tab-add-button" type="button" href="#" aria-expanded="true">
+						<li id="modal-addtab-li"><a id="modal-addtab-button" type="button" aria-expanded="true">
 							<i class="ace-icon fa fa-plus"></i>
 						</a></li>
 					</ul>
 
-					<div class="tab-content">
+					<div id="acl-table" class="tab-content">
 						<div id="eth0" class="tab-pane active">
 							<table class="table table-bordered table-hover">
 								<thead>
@@ -45,15 +45,20 @@
 			</div>
 
 			<div class="modal-footer">
-				<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
-					<i class="ace-icon fa fa-times"></i>
-					Close
-				</button>
-				<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
-					<i class="ace-icon fa fa-check"></i>
-					Confirm
-				</button>
+				<div class="btn-group">
+					<!-- <p> -->
+						<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
+							<i class="ace-icon fa fa-times"></i>
+							Close
+						</button>
+						
+						<button id="modal-confirm-button" class="btn btn-sm btn-success">
+							<i class="ace-icon fa fa-check"></i>
+							Confirm
+						</button>
+					<!-- </p> -->
+				</div>
 			</div>
 		</div><!-- /.modal-content -->
 	</div>
-</div>	
+</div>
