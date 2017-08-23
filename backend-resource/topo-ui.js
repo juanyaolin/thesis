@@ -68,7 +68,178 @@ $('input[name="function-button"]').change( function ( e ) {
 });
 
 
-/*	Initial topology diagram setting.
+$('button[id="setting"]').attr('type', 'button').on('click', function() {
+	console.log('setting pressed');
+	
+	curThesisObj.nodeDataArray[0].address = `0.0.0.0/0`;
+	
+});
+
+
+/*	[generate button Handler]
+ *	
+ */
+$('button[id="project-generate-button"]').attr('type', 'button').on('click', function () {
+	console.log('generate-button pressed');
+	let modalHTMLPath, modalHTMLData, $modal, $confirm;
+
+	modalHTMLPath = `${__dirname}/templates/generate-modal.html`;
+	modalHTMLData = fs.readFileSync(modalHTMLPath, 'utf-8').toString();
+	$(modalHTMLData).insertAfter('#main-container');
+
+	$modal = $('#generate-modal');
+	$confirm = $('#modal-confirm-button');
+
+	$modal.on('show.bs.modal', function () {
+		$confirm.on('click', function () {
+			console.log('confirm');
+			let nodeData, counter = {
+				network: document.getElementById('network-spinner').value,
+				firewall: document.getElementById('firewall-spinner').value,
+				rule: document.getElementById('rule-spinner').value,
+			};
+			
+			Object.keys(counter).forEach(function ( nodeType, typeCount ) {
+				if ( nodeType === 'rule' ) return;
+				for (let i=0; i<counter[nodeType]; i++) {
+					if ( nodeType === 'network' ) {
+						myDiagram.model.addNodeData(new NewNode(nodeType, `${i+1}.0.0.0/8`));
+					}
+					else myDiagram.model.addNodeData(new NewNode(nodeType));
+				}
+			});
+
+			linkNode();
+
+			let curPath = myTopology(curThesisObj.nodeDataArray, curThesisObj.linkDataArray);
+			ruleGenerator(curThesisObj.aclObject, curPath.generateObject);
+
+
+
+			$modal.modal('hide');
+
+			function NewNode ( nodeType, address=undefined ) {
+				myOperate['nodeCounter'][nodeType]++;
+				
+				this.key = `${nodeType}${myOperate['nodeCounter'][nodeType]}`;
+				this.category = `${nodeType}`;
+				
+				return this;
+			}
+
+			function linkNode () {
+				let nodeArray = {
+					network: [],
+					firewall: []
+				};
+				curThesisObj.nodeDataArray.forEach(function ( curNode, curNodeCount ) {
+					nodeArray[curNode.category].push(curNode);
+				});
+
+				// nw <--> fw
+				nodeArray['network'].forEach(function ( curNode, curNodeCount ) {
+					myDiagram.model.addLinkData({
+						category: 'link',
+						from: curNode.key,
+						to: nodeArray['firewall'][randomValue(0, nodeArray['firewall'].length-1)].key,
+						text: 'link'
+					});
+				});
+
+				// fw <--> fw
+				nodeArray['firewall'].forEach(function ( fromNode, fromNodeCount ) {
+					let sliceNodeArray = nodeArray['firewall'].slice(fromNodeCount+1, nodeArray['firewall'].length);
+					let linkCount = 0;
+
+					if ( sliceNodeArray.length === 0 ) return;
+					
+
+					for (let toNodeCount=0; toNodeCount<sliceNodeArray.length; toNodeCount++) {
+						let toNode = sliceNodeArray[toNodeCount];
+						let randomRatio = 0;
+						if ( sliceNodeArray.length > 50 ) randomRatio = 1;
+						else if ( sliceNodeArray.length > 25 ) randomRatio = 2;
+						else randomRatio = 3;
+
+
+						if ( randomValue(0, randomRatio) ) {
+							myDiagram.model.addLinkData({
+								category: 'link',
+								from: fromNode.key,
+								to: toNode.key,
+								text: 'link'
+							});
+							linkCount++;
+						}
+					}
+
+					if ( linkCount === 0 ) {
+						myDiagram.model.addLinkData({
+							category: 'link',
+							from: fromNode.key,
+							to: sliceNodeArray[randomValue(0, sliceNodeArray.length-1)].key,
+							text: 'link'
+						});
+					}
+				});
+			}
+
+
+
+		});
+
+
+		$('#network-spinner').ace_spinner({
+			value: 2,
+			min: 2,
+			max: 100,
+			step: 1,
+			// on_sides: true,
+			icon_up:'ace-icon fa fa-plus bigger-110',
+			icon_down:'ace-icon fa fa-minus bigger-110',
+			btn_up_class:'btn-success',
+			btn_down_class:'btn-danger'
+		});
+
+		$('#firewall-spinner').ace_spinner({
+			value: 1,
+			min: 1,
+			max: 100,
+			step: 1,
+			// on_sides: true,
+			icon_up:'ace-icon fa fa-plus bigger-110',
+			icon_down:'ace-icon fa fa-minus bigger-110',
+			btn_up_class:'btn-success',
+			btn_down_class:'btn-danger'
+		});
+
+		$('#rule-spinner').ace_spinner({
+			value: 100,
+			min: 100,
+			max: 10000,
+			step: 100,
+			// on_sides: true,
+			icon_up:'ace-icon fa fa-plus bigger-110',
+			icon_down:'ace-icon fa fa-minus bigger-110',
+			btn_up_class:'btn-success',
+			btn_down_class:'btn-danger'
+		});
+
+	});
+
+	$modal.on('shown.bs.modal', function () {});
+	$modal.on('hide.bs.modal', function () {});
+	$modal.on('hidden.bs.modal', function () {
+		$modal.remove();
+	});
+	// start to show
+	$modal.modal('show');
+});
+
+
+
+
+/*	[init]
  *	Initial topology diagram setting.
  */
 function init ( thesisObject ) {
@@ -114,8 +285,7 @@ function init ( thesisObject ) {
 			var newNodeId = myOperate.itemType + myOperate.nodeCounter[myOperate.itemType];
 			this.archetypeNodeData = {
 				key: newNodeId,
-				category: myOperate.itemType,
-				label: newNodeId
+				category: myOperate.itemType
 			};
 			return go.ClickCreatingTool.prototype.insertPart.call(this, loc);
 		}
@@ -140,6 +310,8 @@ function init ( thesisObject ) {
 	update(curThesisObj);
 }
 
+function clear () {}
+
 function update ( thesisObject ) {
 	myDiagram.clear();
 	curThesisObj = thesisObject;
@@ -161,11 +333,14 @@ function update ( thesisObject ) {
 			// do when insert a new node
 			changedValue = e.newValue;
 			if ( changedValue.category === 'link' ) return;
-			else if ( changedValue.category === 'network' ) return;
-			curNodeACLObj = new ACLObject(changedValue.key);
-			curThesisObj['aclObject'][changedValue.key] = curNodeACLObj;
-			// console.log('Insert a node:');
-			// console.log(changedValue);
+			else if ( changedValue.category === 'network' ) {
+				// console.log(changedValue);
+				changedValue['address'] = `${myOperate.nodeCounter['network']}.0.0.0/8`;
+			} else {
+				curNodeACLObj = new ACLObject(changedValue.key);
+				curThesisObj['aclObject'][changedValue.key] = curNodeACLObj;
+			}
+
 		} else if ( e.change.name === 'Remove' ) {
 			// do when remove a old node
 			changedValue = e.oldValue;
@@ -176,24 +351,14 @@ function update ( thesisObject ) {
 			// console.log(changedValue);
 		}
 	});
-
-
 }
 
 
 
 function nodeDoubleClicked ( e, obj ) {
 	// console.log('node been double-clicked');
-
 	nodeBeenDoubleClicked = obj.part.data;
-	// console.log(nodeBeenDoubleClicked);
-
 	buildModal(nodeBeenDoubleClicked.category);
-
-	
-	
-
-
 }
 
 
@@ -233,8 +398,8 @@ function buildTemplates () {
 				{ font: "bold 16px sans-serif" },
 				new go.Binding('text', 'key')),
 			$s(go.Picture, 
-				{ source: `${pictures}/network.png`, width: 50, height: 50 }
-				)));
+				{ source: `${pictures}/network.png`, width: 50, height: 50 })
+			));
 
 	myDiagram.linkTemplateMap.add('', $s(go.Link, $s(go.Shape)));
 	myDiagram.linkTemplateMap.add('link', $s(go.Link, $s(go.Shape)));
@@ -251,34 +416,112 @@ module.exports.update = update;
 
 function buildModal ( modalType ) {
 	let modalHTMLPath, modalHTMLData;
-	let $modal, $confirmButton, $importButton;
+	let $modal, $importButton, $confirmButton;
 
 	if ( modalType === 'network' ) {
 		modalHTMLPath = `${__dirname}/templates/network-modal.html`;
 		modalHTMLData = fs.readFileSync(modalHTMLPath, 'utf-8').toString();
 		$(modalHTMLData).insertAfter('#main-container');
+		// console.log(nodeBeenDoubleClicked);
+		let [addr, mask] = (nodeBeenDoubleClicked.address).split('/');
+		let [addr1st, addr2nd, addr3rd, addr4th] = addr.split('.');
 
-		$modal = $('#network-doubleclick-modal'),
+		$modal = $('#network-doubleclick-modal');
+		$confirmButton = $('#modal-confirm-button');
 
-		$modal.on('show.bs.modal', function () {});
+		$modal.on('show.bs.modal', function () {
+			$('#addr1st-spinner').ace_spinner({
+				value: addr1st,
+				min: 0,
+				max: 255,
+				step: 1,
+				// on_sides: true,
+				icon_up:'ace-icon fa fa-plus bigger-110',
+				icon_down:'ace-icon fa fa-minus bigger-110',
+				btn_up_class:'btn-success',
+				btn_down_class:'btn-danger'
+			});
+			$('#addr2nd-spinner').ace_spinner({
+				value: addr2nd,
+				min: 0,
+				max: 255,
+				step: 1,
+				// on_sides: true,
+				icon_up:'ace-icon fa fa-plus bigger-110',
+				icon_down:'ace-icon fa fa-minus bigger-110',
+				btn_up_class:'btn-success',
+				btn_down_class:'btn-danger'
+			});
+			$('#addr3rd-spinner').ace_spinner({
+				value: addr3rd,
+				min: 0,
+				max: 255,
+				step: 1,
+				// on_sides: true,
+				icon_up:'ace-icon fa fa-plus bigger-110',
+				icon_down:'ace-icon fa fa-minus bigger-110',
+				btn_up_class:'btn-success',
+				btn_down_class:'btn-danger'
+			});
+			$('#addr4th-spinner').ace_spinner({
+				value: addr4th,
+				min: 0,
+				max: 255,
+				step: 1,
+				// on_sides: true,
+				icon_up:'ace-icon fa fa-plus bigger-110',
+				icon_down:'ace-icon fa fa-minus bigger-110',
+				btn_up_class:'btn-success',
+				btn_down_class:'btn-danger'
+			});
+			$('#mask-spinner').ace_spinner({
+				value: mask,
+				min: 0,
+				max: 32,
+				step: 1,
+				// on_sides: true,
+				icon_up:'ace-icon fa fa-plus bigger-110',
+				icon_down:'ace-icon fa fa-minus bigger-110',
+				btn_up_class:'btn-success',
+				btn_down_class:'btn-danger'
+			});
+		});
 		$modal.on('shown.bs.modal', function () {});
 		$modal.on('hide.bs.modal', function () {});
 		$modal.on('hidden.bs.modal', function () {
 			$modal.remove();
 		});
+
 		// start to show
-		$('#network-doubleclick-modal').modal('show');
-	} else if ( modalType === 'firewall' ) {
+		$modal.modal('show');
+
+		$confirmButton.on('click', function () {
+			console.log('confirm');
+			addr1st = document.getElementById('addr1st-spinner').value;
+			addr2nd = document.getElementById('addr2nd-spinner').value;
+			addr3rd = document.getElementById('addr3rd-spinner').value;
+			addr4th = document.getElementById('addr4th-spinner').value;
+			mask = document.getElementById('mask-spinner').value;
+			nodeBeenDoubleClicked.address = `${addr1st}.${addr2nd}.${addr3rd}.${addr4th}/${mask}`;
+			$modal.modal('hide');
+		});
+	}
+	else if ( modalType === 'firewall' ) {
 		modalHTMLPath = `${__dirname}/templates/firewall-modal.html`;
 		modalHTMLData = fs.readFileSync(modalHTMLPath, 'utf-8').toString();
 		$(modalHTMLData).insertAfter('#main-container');
 
-		$modal = $('#firewall-doubleclick-modal'),
-		$confirmButton = $('#modal-confirm-button'),
+		$modal = $('#firewall-doubleclick-modal');
+		$confirmButton = $('#modal-confirm-button');
 		$importButton = $('#import-acl-button');
 
 		$modal.on('show.bs.modal', function () {
 			curNodeACLObj = curThesisObj['aclObject'][nodeBeenDoubleClicked.key];
+			// console.log('key: ', nodeBeenDoubleClicked.key);
+			// console.log('curThesisObj: ', curThesisObj);
+			// console.log(`curThesisObj['aclObject']: `, curThesisObj['aclObject']);
+			// console.log(`curThesisObj['aclObject'][nodeBeenDoubleClicked.key]: `, curThesisObj['aclObject'][nodeBeenDoubleClicked.key]);
+			// console.log(`curNodeACLObj: `, curNodeACLObj);
 			buildACLTable();
 		});
 
@@ -299,7 +542,8 @@ function buildModal ( modalType ) {
 					console.log("No file selected");
 					return;
 				}
-				curNodeACLObj = new ACLObject(nodeBeenDoubleClicked.key, filepath[0]);
+				let fileDataLine = fs.readFileSync(filepath[0], 'utf-8').toString().split('\n');
+				curNodeACLObj = new ACLObject(nodeBeenDoubleClicked.key, fileDataLine);
 				buildACLTable();
 			});
 		});
@@ -314,16 +558,30 @@ function buildModal ( modalType ) {
 		$modal.modal('show');
 
 		function buildACLTable () {
-			// console.log(curNodeACLObj);
-			$('#firewall-doubleclick-modal .modal-header h1').text(curNodeACLObj.objName);
+			console.log(curNodeACLObj);
+			$('#firewall-doubleclick-modal .modal-header h1').text(curNodeACLObj.nodeName);
 
-			if ( isEmpty(curNodeACLObj['ruleObject']) ) return;
+			$('.scrollable').each(function () {
+				var $this = $(this);
+				$(this).ace_scroll({
+					size: $this.attr('data-size') || 400,
+					//styleClass: 'scroll-left scroll-margin scroll-thin scroll-dark scroll-light no-track scroll-visible'
+				});
+			});
+
+			if ( checkObjectIsEmpty(curNodeACLObj['cmdListByData']) ) {
+				console.log('empty')
+				return;
+			}
 
 			$(`#acl-tabs`).children('[id!=modal-addtab-li]').remove();
 			$(`#acl-table`).children().remove();
-			Object.keys(curNodeACLObj['ruleObject']).sort().forEach(function ( eth, ethCount ) {
-				let curIF = curNodeACLObj['ruleObject'][eth],
+
+
+			Object.keys(curNodeACLObj['cmdListByData']).sort().forEach(function ( eth, ethCount ) {
+				let curIF = curNodeACLObj['cmdListByData'][eth],
 					ifTable = document.createElement('div'),
+					scrollbar = document.createElement('div'),
 					ifTab = document.createElement('li'),
 					table = document.createElement('table'),
 					thead = document.createElement('thead'),
@@ -349,7 +607,9 @@ function buildModal ( modalType ) {
 				$(thr).append(th_in_out, th_order, th_protocol, th_srcip, th_destip, th_flag, th_action).appendTo(thead);
 				$(thead).appendTo(table);
 				$(tbody).appendTo(table);
-				$(table).appendTo(ifTable);
+				$(table).appendTo(scrollbar);
+				$(scrollbar).appendTo(ifTable);
+				
 
 				ifTable.id = eth;
 				
@@ -357,6 +617,7 @@ function buildModal ( modalType ) {
 				table.classList.add("table");
 				table.classList.add("table-bordered");
 				table.classList.add("table-hover");
+				scrollbar.classList.add("scrollable");
 
 				if ( ethCount === 0 ) {
 					ifTab.classList.add('active');
@@ -369,7 +630,7 @@ function buildModal ( modalType ) {
 
 
 				Object.keys(curIF).sort().forEach(function ( io, ioCount ) {
-					curIF[io].forEach(function ( rule, ruleCount ) {
+					curIF[io].forEach(function ( cmd, cmdCount ) {
 						let $tbody = $(`#${eth}`).find('tbody'),
 							tbr = document.createElement('tr'),
 							td_in_out = document.createElement('td'),
@@ -381,46 +642,46 @@ function buildModal ( modalType ) {
 							td_action = document.createElement('td');
 
 						
-						// console.log(rule);
-						td_in_out.innerHTML = rule['in_out'];
-						td_order.innerHTML = rule['ruleorder'];
-						td_protocol.innerHTML = rule['protocol'];
-						td_action.innerHTML = rule['action'];
-						td_srcip.innerHTML = `${rule['src_ip']['ipaddrData']} / ${rule['src_ip']['maskData']}`;
-						td_destip.innerHTML = `${rule['dest_ip']['ipaddrData']} / ${rule['dest_ip']['maskData']}`;
-						if ( rule['tcp_flags'].length === 0 ) {
+						// console.log(cmd);
+						td_in_out.innerHTML = cmd['in_out'];
+						// td_order.innerHTML = cmd['cmdorder'];
+						td_protocol.innerHTML = cmd['protocol'];
+						td_action.innerHTML = cmd['action'];
+						td_srcip.innerHTML = cmd['src_ip'];	// `${cmd['src_ip']['ipaddrData']} / ${cmd['src_ip']['maskData']}`;
+						td_destip.innerHTML = cmd['dest_ip'];	//	`${cmd['dest_ip']['ipaddrData']} / ${cmd['dest_ip']['maskData']}`;
+						if ( cmd['tcp_flags'].length === 0 ) {
 							td_flag.innerHTML = 'ANY';
-						} else if ( rule['tcp_flags'].length === 2 ) {
-							if ( rule['tcp_flags'][0] === 'ACK' ) td_flag.innerHTML = `${rule['tcp_flags'][1]}+${rule['tcp_flags'][0]}`;
-							else td_flag.innerHTML = `${rule['tcp_flags'][0]}+${rule['tcp_flags'][1]}`;
-						} else td_flag.innerHTML = rule['tcp_flags'][0];
+						} else if ( cmd['tcp_flags'].length === 2 ) {
+							if ( cmd['tcp_flags'][0] === 'ACK' ) td_flag.innerHTML = `${cmd['tcp_flags'][1]}+${cmd['tcp_flags'][0]}`;
+							else td_flag.innerHTML = `${cmd['tcp_flags'][0]}+${cmd['tcp_flags'][1]}`;
+						} else td_flag.innerHTML = cmd['tcp_flags'][0];
 
 						$(tbr).append(td_in_out, td_order, td_protocol, td_srcip, td_destip, td_flag, td_action).appendTo($tbody);
 					});
 					
 				});
+
+				
+				
 				
 			});
-			
-			function isEmpty ( obj ) {
-				// null and undefined are "empty"
-				if (obj == null) return true;
-				// Assume if it has a length property with a non-zero value
-				// that that property is correct.
-				if (obj.length > 0)    return false;
-				if (obj.length === 0)  return true;
-				// If it isn't an object at this point
-				// it is empty, but it can't be anything *but* empty
-				// Is it empty?  Depends on your application.
-				if (typeof obj !== "object") return true;
-				// Otherwise, does it have any properties of its own?
-				// Note that this doesn't handle
-				// toString and valueOf enumeration bugs in IE < 9
-				for (var key in obj) {
-					if (hasOwnProperty.call(obj, key)) return false;
-				}
-				return true;
-			}
+
+
+
+			$('.scrollable').each(function () {
+				var $this = $(this);
+				$(this).ace_scroll({
+					size: $this.attr('data-size') || 400,
+					//styleClass: 'scroll-left scroll-margin scroll-thin scroll-dark scroll-light no-track scroll-visible'
+				});
+			});
+
+
+
+			// $(window).on('resize.scroll_reset', function() {
+			// 	$('.scrollable-horizontal').ace_scroll('reset');
+			// });
+
 
 
 		}

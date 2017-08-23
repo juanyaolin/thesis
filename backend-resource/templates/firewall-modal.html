@@ -24,20 +24,23 @@
 
 					<div id="acl-table" class="tab-content">
 						<div id="eth0" class="tab-pane active">
-							<table class="table table-bordered table-hover">
-								<thead>
-									<tr>
-										<th>In/Out</th>
-										<th>Order</th>
-										<th>Protocol</th>
-										<th>Src IP</th>
-										<th>Dest IP</th>
-										<th>Flag</th>
-										<th>Action</th>
-									</tr>
-								</thead>
-								<tbody></tbody>
-							</table>
+							<div class="scrollable">
+								
+									<table class="table table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>In/Out</th>
+												<th>Order</th>
+												<th>Protocol</th>
+												<th>Src IP</th>
+												<th>Dest IP</th>
+												<th>Flag</th>
+												<th>Action</th>
+											</tr>
+										</thead>
+										<tbody></tbody>
+									</table>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -46,19 +49,18 @@
 
 			<div class="modal-footer">
 				<div class="btn-group">
-					<!-- <p> -->
-						<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
-							<i class="ace-icon fa fa-times"></i>
-							Close
-						</button>
-						
-						<button id="modal-confirm-button" class="btn btn-sm btn-success">
-							<i class="ace-icon fa fa-check"></i>
-							Confirm
-						</button>
-					<!-- </p> -->
+					<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
+						<i class="ace-icon fa fa-times"></i>
+						Close
+					</button>
+					
+					<button id="modal-confirm-button" class="btn btn-sm btn-success">
+						<i class="ace-icon fa fa-check"></i>
+						Confirm
+					</button>
 				</div>
 			</div>
+			
 		</div><!-- /.modal-content -->
 	</div>
 </div>

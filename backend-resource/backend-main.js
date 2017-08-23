@@ -4,12 +4,10 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('underscore');
 const {dialog} = require('electron').remote;
-// const ruleObject = require( path.join(__dirname, 'topo-input-parser.js') );
 const topoUI = require( path.join(__dirname, 'topo-ui.js') );
 const util = require('util'); // debug
 
-const ruleObject = require( './acl-file-parser.js');
-// const aclObject = require( './acl-file-parser.js');
+
 
 
 /*	[load button Handler]
@@ -69,15 +67,20 @@ $('button[id="project-save-button"]').attr('type', 'button').on('click', functio
 	}
 });
 
-/*	[generate button Handler]
- *	If it's a new project, there will be 'save-as' new file.
- *	If it's a object have been loaded or saved, there will be 'update' file.
+/*	[inspect button Handler]
+ *	
  */
-$('button[id="project-generate-button"]').attr('type', 'button').on('click', function () {
-	console.log('generate-button pressed');
-	
-});
+$('button[id="inspect-button"]').attr('type', 'button').on('click', function () {
+	console.log('inspect');
+	let curPath = myTopology(myObject.nodeDataArray, myObject.linkDataArray);
 
+
+	// console.log(curPath);
+	// curPath.showTopo();
+	// curPath.showPath();
+	// curPath.showNode();
+	// curPath.show();
+});
 
 
 
@@ -114,7 +117,7 @@ function myThesisObject ( item=null ) {
 		topoUI.update(this);
 	}
 
-	function chkACLObj (  ) {}
+	
 }
 
 
@@ -142,74 +145,24 @@ let myObject = new myThesisObject();
 myObject.start();
 
 
-
-// double bash to enable the function
-function testRuleObject () 
-{
-	let myACLFile = `./test_rules.txt`;
-	let lineCount = -1;
-	let ruleList = [];
-	let lineList = [];
-	let errList = [];
-
-	fs.readFileSync(myACLFile).toString().split('\n').forEach( (line) => {
-		lineCount++;
-		lineList.push(line);
-		let rule = new ruleObject(line, lineCount, function ( err ) {
-			if ( err ) { errList.push(err); } 
-		});
-		if ( isEmpty(rule) ) { return; }
-		ruleList.push(rule);
-	});
-
-	console.log(ruleList);
-	console.log(lineList);
-	console.log(errList);
-
-	// console.log(ruleList[3]['src_ip']);
-	// console.log(ruleList[3]['dest_ip']);
-
-	function isEmpty ( obj ) {
-		// null and undefined are "empty"
-		if (obj == null) return true;
-		// Assume if it has a length property with a non-zero value
-		// that that property is correct.
-		if (obj.length > 0)    return false;
-		if (obj.length === 0)  return true;
-		// If it isn't an object at this point
-		// it is empty, but it can't be anything *but* empty
-		// Is it empty?  Depends on your application.
-		if (typeof obj !== "object") return true;
-		// Otherwise, does it have any properties of its own?
-		// Note that this doesn't handle
-		// toString and valueOf enumeration bugs in IE < 9
-		for (var key in obj) {
-			if (hasOwnProperty.call(obj, key)) return false;
-		}
-		return true;
-	}
-}
-
-
-
 // for test the object change
 {
-	$('button[id="setting"]').attr('type', 'button').on('click', function() {
-		// myObject.count++;
-		// console.log('count = ' + myObject.count);
-		console.log('setting pressed');
+	// $('button[id="setting"]').attr('type', 'button').on('click', function() {
+	// 	// myObject.count++;
+	// 	// console.log('count = ' + myObject.count);
+	// 	console.log('setting pressed');
 
-		dialog.showOpenDialog( function ( filepath ) {
-			// filepath is an array that contains all the selected
-			console.log(filepath);
-			if ( filepath === undefined ) {
-				console.log("No file selected");
-				return;
-			}
-			let test = new aclObject(filepath[0]);
-			console.log(test);
-		});
-	});
+	// 	dialog.showOpenDialog( function ( filepath ) {
+	// 		// filepath is an array that contains all the selected
+	// 		console.log(filepath);
+	// 		if ( filepath === undefined ) {
+	// 			console.log("No file selected");
+	// 			return;
+	// 		}
+	// 		let test = new aclObject(filepath[0]);
+	// 		console.log(test);
+	// 	});
+	// });
 
 	$('button[id="show-object"]').attr('type', 'button').on('click', function() {
 		myObject.showObject();

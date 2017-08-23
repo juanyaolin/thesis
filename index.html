@@ -3,7 +3,7 @@
 	<head>
 		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 		<meta charset="utf-8" />
-		<title>Dashboard - Ace Admin</title>
+		<title>Thesis Project</title>
 
 		<meta name="description" content="overview &amp; stats" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
@@ -81,7 +81,11 @@
 												<span><i class="fa fa-television"></i>&#160;&#160;Topology</span>
 
 												<span style="float: right">
-													
+													<button id="project-generate-button" class="btn btn-app btn-grey btn-xs">
+														<i class="ace-icon fa fa-file-text-o bigger-100"></i>
+														Generate
+													</button>
+
 													<button id="project-load-button" class="btn btn-app btn-grey btn-xs">
 														<i class="ace-icon fa fa-file-text-o bigger-100"></i>
 														Load
@@ -144,9 +148,9 @@
 												</button> -->
 												<!-- <button id="topo-inspect-button" class="btn  btn-grey btn-xs" data-toggle="button" aria-pressed="false">
 													<i class="ace-icon fa fa-arrows-h bigger-160"></i>LinkTest</button> -->
-												<!-- <button id="topo-inspect-button" class="btn btn-app btn-grey btn-xs disabled">
+												<button id="inspect-button" class="btn btn-app btn-grey btn-xs ">
 													<i class="ace-icon fa fa-caret-square-o-right bigger-160"></i>Inspect
-												</button> -->
+												</button>
 												<!-- <div id="topo-button" style="height:140px"></div> -->
 											</div>
 											<div id="topo-diagram" class="col-sm-11 widget-box" style="width: 92%; height:400px"></div>
@@ -226,15 +230,19 @@
 		<script src="assets/js/jquery.flot.min.js"></script>
 		<script src="assets/js/jquery.flot.pie.min.js"></script>
 		<script src="assets/js/jquery.flot.resize.min.js"></script>
+		<script src="assets/js/spinbox.min.js"></script>
 
 		<!-- ace scripts -->
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
 
 		<!-- inline scripts related to this page -->
-		<script src="assets/plugins/fileinput/js/fileinput.min.js"></script>
+		<!-- <script src="assets/plugins/fileinput/js/fileinput.min.js"></script> -->
 		<script src="GoJS-master/release/go-debug.js"></script>
 		<script src="GoJS-master/extensions/Robot.js"></script>
+		<script src="backend-resource/myutils.js"></script>
+		<script src="backend-resource/topology-path.js"></script>
+		<script src="backend-resource/acl-generator.js"></script>
 		<script type="text/javascript">
 			require('./renderer.js')
 		</script>
@@ -242,3 +250,6 @@
 		<script>if (window.module) module = window.module;</script>
 	</body>
 </html>
+
+
+

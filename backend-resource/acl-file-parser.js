@@ -18,78 +18,158 @@ const Getopt = require('node-getopt').create([
 
 /*	[ACLFileObject Constructor]
  *	@ parameter
- *	filepath:	the file path of acl file to be convert
+ *	cmdDataLine:	the file path of acl file to be convert
  *	
  *	@ output
  *	Return a object which contain below parameter,
  *	errList:	a list consist of error in the original file 
- *	lineList:	a list consist of 
+ *	cmdList:	a list consist of 
  *	ruleList:	a list consist of rule which been convert
  *	ruleObject:	
  */
-function ACLFileObject ( curObjName=null, filepath=null ) {
+function ACLFileObject ( curObjName, cmdDataLine=null ) {
 	let errList = [],
+		cmdList = [],
+		cmdListByData = {},
 		ruleList = [],
-		lineList = [],
 		ruleObject = {};
 
 	// do when a node is created to diagram.
-	if ( filepath === null ) {
+	if ( cmdDataLine === null ) {
 		// this.errList = errList;
-		// this.lineList = lineList;
+		this.cmdList = cmdList;
+		this.cmdListByData = cmdListByData;
 		// this.ruleList = ruleList;
-		this.ruleObject = ruleObject;
-		this.objName = curObjName;
+		// this.ruleObject = ruleObject;
+		this.nodeName = curObjName;
 		return this;
 	}
 
-	lineList = fs.readFileSync(filepath, 'utf-8').toString().split('\n');
-	lineList.forEach(function ( line, lineCount ) {
-		let rule = new RuleObject(line, lineCount, function ( err ) {
+	// lineList = fs.readFileSync(cmdDataLine, 'utf-8').toString().split('\n');
+	cmdDataLine.forEach(function ( line, lineCount ) {
+		let cmd = cmdParser(line, lineCount, function ( err ) {
 			if ( err ) { errList.push(err); } 
 		});
-		if ( isEmpty(rule) ) { return; }
-		let interface = rule['interface'],
-			in_out = rule['in_out'];
+		if ( checkObjectIsEmpty(cmd) ) { return; }
+		let interface = cmd['interface'],
+			in_out = cmd['in_out'];
 		
-		ruleObject[interface] = ruleObject[interface] || {};
-		ruleObject[interface][in_out] = ruleObject[interface][in_out] || [];
-		rule['ruleorder'] = ruleObject[interface][in_out].length;
-		rule['rulemode'] = 'normal';
-		rule['firewall'] = curObjName;
-		ruleObject[interface][in_out].push(rule);
-		ruleList.push(rule);
+		cmdListByData[interface] = cmdListByData[interface] || {};
+		cmdListByData[interface][in_out] = cmdListByData[interface][in_out] || [];
+		// cmd['ruleorder'] = cmdListByData[interface][in_out].length;
+		// cmd['rulemode'] = 'normal';
+		// cmd['firewall'] = curObjName;
+		cmdListByData[interface][in_out].push(cmd);
+		cmdList.push(cmd);
 	});
 
-	this.errList = errList;
-	// this.lineList = lineList;
+	if ( errList.length > 0 ){
+		// console.log(errList);
+		this.errList = errList;
+	}
+	this.cmdList = cmdList;
+	this.cmdListByData = cmdListByData;
 	// this.ruleList = ruleList;
-	this.ruleObject = ruleObject;
-	this.objName = curObjName;
+	// this.ruleObject = ruleObject;
+	this.nodeName = curObjName;
 	return this;
+}
 
-	// to check is the object empty
-	function isEmpty ( obj ) {
-		// null and undefined are "empty"
-		if (obj == null) return true;
-		// Assume if it has a length property with a non-zero value
-		// that that property is correct.
-		if (obj.length > 0)    return false;
-		if (obj.length === 0)  return true;
-		// If it isn't an object at this point
-		// it is empty, but it can't be anything *but* empty
-		// Is it empty?  Depends on your application.
-		if (typeof obj !== "object") return true;
-		// Otherwise, does it have any properties of its own?
-		// Note that this doesn't handle
-		// toString and valueOf enumeration bugs in IE < 9
-		for (var key in obj) {
-			if (hasOwnProperty.call(obj, key)) return false;
+function cmdParser ( line, lineCount, callback ) {
+	let splitLine = line.trim().split(' ');
+	let lineOption = Getopt.parse(splitLine);
+	let action, dest_ip, src_ip, in_out, interface, protocol, src_port, dest_port, tcp_flags = [];
+	let err;
+
+	if ( !checkSyntax(lineOption['argv']) ) {
+		err = `[cmdParser] [line:${lineCount+1}] is not a iptables commad.`;
+		callback(err);
+	}
+	// else console.log(`[${lineCount}] ${lineOption['argv']}`);
+
+	if ( lineOption['options']['A'] === 'INPUT' || lineOption['options']['I'] === 'INPUT' ) {
+		if ( lineOption['options']['o'] ) {
+			err = `[cmdParser] Append or insert to INPUT, but options of interface is '-o'.`;
+			callback(err);
 		}
-		return true;
+		interface = lineOption['options']['i'];
+		in_out = lineOption['options']['A'] ? lineOption['options']['A'] : lineOption['options']['I'];
+	} else if ( lineOption['options']['A'] === 'OUTPUT' || lineOption['options']['I'] === 'OUTPUT' ) {
+		if ( lineOption['options']['i'] ) {
+			err = `[cmdParser] [line:${lineCount+1}] Append or insert to OUTPUT, but options of interface is '-i'.`;
+			callback(err);
+		}
+		interface = lineOption['options']['o'];
+		in_out = lineOption['options']['A'] ? lineOption['options']['A'] : lineOption['options']['I'];
 	}
 
+	if ( lineOption['options']['tcp-flags'] ) {
+		tcp_flags = lineOption['argv'][1].trim().split(',');
+		protocol = 'tcp';
+		tcp_flags = tcp_flags;
+	} else if ( lineOption['options']['p'] ) {
+		protocol = lineOption['options']['p'];
+		tcp_flags = tcp_flags;
+	} else {
+		protocol = 'ip';
+		tcp_flags = tcp_flags;
+	}
+
+	if ( lineOption['options']['s'] ) { src_ip = lineOption['options']['s']; }
+	else { src_ip = '0.0.0.0/0'; }
+
+	if ( lineOption['options']['d'] ) { dest_ip = lineOption['options']['d']; }
+	else { dest_ip = '0.0.0.0/0'; }
+	
+
+	src_port = lineOption['options']['sport'];
+	dest_port = lineOption['options']['dport'];
+	
+	action = lineOption['options']['j'];
+
+
+
+
+
+	if ( err ) return;
+
+	return (new cmdObject(interface, in_out, src_ip, dest_ip, protocol, src_port, dest_port, tcp_flags, action));
+
+	function checkSyntax ( splitLine ) {
+		let currentOffset = splitLine.indexOf('iptables');
+		if ( currentOffset != 0 ) return false;
+		// offset splitLine if needed.
+		// if ( currentOffset > 0) splitLine = splitLine.slice(currentOffset);
+		return true;
+	}
 }
+
+
+
+
+function cmdObject ( interface, in_out, src_ip, dest_ip, protocol, src_port, dest_port, tcp_flags, action ) {
+	this.interface = interface;
+	this.in_out = in_out;
+	this.src_ip = src_ip;
+	this.dest_ip = dest_ip;
+	this.protocol = protocol;
+	this.src_port = src_port;
+	this.dest_port = dest_port;
+	this.tcp_flags = tcp_flags;
+	this.action = action;
+
+	return this;
+}
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -212,31 +292,9 @@ function RuleObject ( line, lineCount, callback ) {
 		this.ipMaxAddress = ipConvertor(this.ipMaxNumber);
 	}
 
-	/*	[ipConvertor]
-	 *	If input data is a string to express IP address, it will return in value.
-	 *	Otherwise, it will return a IP address as 'X.X.X.X'.
-	 */
-	function ipConvertor ( ipData ) {
-		if ( !isNaN(ipData) ) {
-			let Quotient = [],
-				Remainder = [];
 
-			Quotient[0] = ipData;
-			for (var i = 0; i < 4; i++) {
-				Remainder[i] = Math.floor( Quotient[i] % 256 );
-				Quotient[i+1] = Math.floor( Quotient[i] / 256 );
-			}
-
-			let mask = Remainder[3];
-			for (var i = 2; i >= 0; i--)
-				mask = mask + '.' + Remainder[i];
-			return mask;
-		} else {
-			let ipSplit = ipData.trim().split('.');
-			return ( ( ((+ipSplit[0]) * 256) + (+ipSplit[1]) ) * 256 + (+ipSplit[2]) ) * 256 + (+ipSplit[3]);
-		}
-	}
 }
 
 
 module.exports = ACLFileObject;
+module.exports.cmdObject = cmdObject;
