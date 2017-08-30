@@ -1,8 +1,8 @@
 const ACLObject = require(`${__dirname}/backend-resource/acl-file-parser.js`);
 
 function ruleGenerator ( aclObject, geneInfo, ruleNumber=10 ) {
-	console.log(aclObject);
-	console.log(geneInfo);
+	// console.log(aclObject);
+	// console.log(geneInfo);
 	
 
 	Object.keys(geneInfo).sort().forEach(function ( curNode ) {
@@ -139,7 +139,7 @@ function ruleGenerator ( aclObject, geneInfo, ruleNumber=10 ) {
 			max_ip = min_ip | ~(maskValue);
 			newAddrValue = randomValue(min_ip, max_ip);
 
-			newMask = randomValue(parseInt(mask), 32);
+			newMask = randomValue(parseInt(mask), 24);
 			// console.log(mask, newMask);
 			newMaskValue = ( parseInt('1'.repeat(newMask), 2) << 32-newMask ) >>> 0;
 			// console.log(mask, newMask, newMaskValue, ipConvertor(newMaskValue));

@@ -76,3 +76,35 @@ function ipConvertor ( ipData ) {
 		return ( ( ((+ipSplit[0]) * 256) + (+ipSplit[1]) ) * 256 + (+ipSplit[2]) ) * 256 + (+ipSplit[3]);
 	}
 }
+
+
+
+/*	[AddressPrefixObject Constructor]
+ *	@ parameter
+ *	ipdata:	ip information, express as a string like 'X.X.X.X/X'.
+ *	
+ *	@ output
+ *	Return a object which contain with,
+ *	maskData:		a value from 0 to 32, original value from calling function.
+ *	ipaddrData:		a ip address data, original string from calling function.
+ *	maskAddress:	a string to express network mask as 'X.X.X.X'
+ *	maskNumber:		a value in decimal to express network mask, according to 'maskAddress'.
+ *	ipMinAddress:	a string to express network address as 'X.X.X.X'
+ *	ipMinNumber:	a value in decimal to express network address, according to 'maskAddress'.
+ *	ipMaxAddress:	a string to express boardcast address as 'X.X.X.X'
+ *	ipMaxNumber:	a value in decimal to express boardcast address, according to 'maskAddress'.
+ */
+function AddressPrefixObject ( ipdata ) {
+	let [ipaddr, mask] = ipdata.trim().split('/');
+	
+	this.maskData = mask;
+	this.ipaddrData = ipaddr;
+	this.maskNumber = ( parseInt('1'.repeat(mask), 2) << 32-mask ) >>> 0;
+	this.maskAddress = ipConvertor(this.maskNumber);
+	this.ipMinNumber = ((ipConvertor(ipaddr)) & (this.maskNumber)) >>> 0;
+	this.ipMinAddress = ipConvertor(this.ipMinNumber);
+	this.ipMaxNumber = ((this.ipMinNumber >>> 0) | (parseInt(('1'.repeat(32-mask)), 2))) >>> 0;
+	this.ipMaxAddress = ipConvertor(this.ipMaxNumber);
+
+	// return this;
+}

@@ -5,8 +5,9 @@ const path = require('path');
 const _ = require('underscore');
 const {dialog} = require('electron').remote;
 const topoUI = require( path.join(__dirname, 'topo-ui.js') );
+const ARARTree = require( path.join(__dirname, 'myarar.js') );
 const util = require('util'); // debug
-
+const QueueObject = require('./myqueue.js');
 
 
 
@@ -72,7 +73,11 @@ $('button[id="project-save-button"]').attr('type', 'button').on('click', functio
  */
 $('button[id="inspect-button"]').attr('type', 'button').on('click', function () {
 	console.log('inspect');
-	let curPath = myTopology(myObject.nodeDataArray, myObject.linkDataArray);
+	let topoPath = myTopology(myObject.nodeDataArray, myObject.linkDataArray);
+
+	Object.keys(myObject['aclObject']).forEach(function ( nodeName, nodeNameCount ) {
+		myObject['aclObject'][nodeName]['ARARTree'] = new ARARTree(myObject['aclObject'][nodeName]['ruleList'], true, true, 2);
+	});
 
 
 	// console.log(curPath);
@@ -145,26 +150,32 @@ let myObject = new myThesisObject();
 myObject.start();
 
 
-// for test the object change
-{
-	// $('button[id="setting"]').attr('type', 'button').on('click', function() {
-	// 	// myObject.count++;
-	// 	// console.log('count = ' + myObject.count);
-	// 	console.log('setting pressed');
+$('button[id="setting"]').attr('type', 'button').on('click', function() {
+	console.log('setting pressed');
 
-	// 	dialog.showOpenDialog( function ( filepath ) {
-	// 		// filepath is an array that contains all the selected
-	// 		console.log(filepath);
-	// 		if ( filepath === undefined ) {
-	// 			console.log("No file selected");
-	// 			return;
-	// 		}
-	// 		let test = new aclObject(filepath[0]);
-	// 		console.log(test);
-	// 	});
-	// });
 
-	$('button[id="show-object"]').attr('type', 'button').on('click', function() {
-		myObject.showObject();
-	});
-}
+	let queue = new QueueObject(3, 10, true);
+	// queue.push(`[test]`);
+	// console.log(queue.shift());
+	// queue.push(`[test1]`);
+	// queue.push(`[test2]`);
+	// console.log(queue.shift());
+	// console.log(queue.shift());
+
+
+	for (var i = 0; i < 2000; i++) {
+		if ( !queue.isFull() )
+			queue.push(`[${i}]`);
+	}
+	console.log(queue);
+	for (var i = 0; i < 2000; i++) {
+		if ( !queue.isEmpty() )
+			console.log(queue.shift());
+	}
+	console.log(queue);
+	// queue.shift();
+});
+
+$('button[id="show-object"]').attr('type', 'button').on('click', function() {
+	myObject.showObject();
+});

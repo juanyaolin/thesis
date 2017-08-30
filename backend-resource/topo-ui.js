@@ -68,12 +68,6 @@ $('input[name="function-button"]').change( function ( e ) {
 });
 
 
-$('button[id="setting"]').attr('type', 'button').on('click', function() {
-	console.log('setting pressed');
-	
-	curThesisObj.nodeDataArray[0].address = `0.0.0.0/0`;
-	
-});
 
 
 /*	[generate button Handler]
@@ -430,6 +424,8 @@ function buildModal ( modalType ) {
 		$confirmButton = $('#modal-confirm-button');
 
 		$modal.on('show.bs.modal', function () {
+			$('#network-doubleclick-modal .modal-header h1').text(curNodeACLObj.nodeName);
+
 			$('#addr1st-spinner').ace_spinner({
 				value: addr1st,
 				min: 0,
@@ -569,7 +565,7 @@ function buildModal ( modalType ) {
 				});
 			});
 
-			if ( checkObjectIsEmpty(curNodeACLObj['cmdListByData']) ) {
+			if ( checkObjectIsEmpty(curNodeACLObj['ruleObject']) ) {
 				console.log('empty')
 				return;
 			}
@@ -578,8 +574,8 @@ function buildModal ( modalType ) {
 			$(`#acl-table`).children().remove();
 
 
-			Object.keys(curNodeACLObj['cmdListByData']).sort().forEach(function ( eth, ethCount ) {
-				let curIF = curNodeACLObj['cmdListByData'][eth],
+			Object.keys(curNodeACLObj['ruleObject']).sort().forEach(function ( eth, ethCount ) {
+				let curIF = curNodeACLObj['ruleObject'][eth],
 					ifTable = document.createElement('div'),
 					scrollbar = document.createElement('div'),
 					ifTab = document.createElement('li'),
@@ -630,7 +626,7 @@ function buildModal ( modalType ) {
 
 
 				Object.keys(curIF).sort().forEach(function ( io, ioCount ) {
-					curIF[io].forEach(function ( cmd, cmdCount ) {
+					curIF[io].forEach(function ( rule, ruleCount ) {
 						let $tbody = $(`#${eth}`).find('tbody'),
 							tbr = document.createElement('tr'),
 							td_in_out = document.createElement('td'),
@@ -642,19 +638,19 @@ function buildModal ( modalType ) {
 							td_action = document.createElement('td');
 
 						
-						// console.log(cmd);
-						td_in_out.innerHTML = cmd['in_out'];
-						// td_order.innerHTML = cmd['cmdorder'];
-						td_protocol.innerHTML = cmd['protocol'];
-						td_action.innerHTML = cmd['action'];
-						td_srcip.innerHTML = cmd['src_ip'];	// `${cmd['src_ip']['ipaddrData']} / ${cmd['src_ip']['maskData']}`;
-						td_destip.innerHTML = cmd['dest_ip'];	//	`${cmd['dest_ip']['ipaddrData']} / ${cmd['dest_ip']['maskData']}`;
-						if ( cmd['tcp_flags'].length === 0 ) {
+						// console.log(rule);
+						td_in_out.innerHTML = rule['in_out'];
+						td_order.innerHTML = rule['ruleOrder'];
+						td_protocol.innerHTML = rule['protocol'];
+						td_action.innerHTML = rule['action'];
+						td_srcip.innerHTML = rule['src_ip'];	// `${rule['src_ip']['ipaddrData']} / ${rule['src_ip']['maskData']}`;
+						td_destip.innerHTML = rule['dest_ip'];	//	`${rule['dest_ip']['ipaddrData']} / ${rule['dest_ip']['maskData']}`;
+						if ( rule['tcp_flags'].length === 0 ) {
 							td_flag.innerHTML = 'ANY';
-						} else if ( cmd['tcp_flags'].length === 2 ) {
-							if ( cmd['tcp_flags'][0] === 'ACK' ) td_flag.innerHTML = `${cmd['tcp_flags'][1]}+${cmd['tcp_flags'][0]}`;
-							else td_flag.innerHTML = `${cmd['tcp_flags'][0]}+${cmd['tcp_flags'][1]}`;
-						} else td_flag.innerHTML = cmd['tcp_flags'][0];
+						} else if ( rule['tcp_flags'].length === 2 ) {
+							if ( rule['tcp_flags'][0] === 'ACK' ) td_flag.innerHTML = `${rule['tcp_flags'][1]}+${rule['tcp_flags'][0]}`;
+							else td_flag.innerHTML = `${rule['tcp_flags'][0]}+${rule['tcp_flags'][1]}`;
+						} else td_flag.innerHTML = rule['tcp_flags'][0];
 
 						$(tbr).append(td_in_out, td_order, td_protocol, td_srcip, td_destip, td_flag, td_action).appendTo($tbody);
 					});
