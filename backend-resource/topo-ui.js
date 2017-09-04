@@ -186,7 +186,7 @@ $('button[id="project-generate-button"]').attr('type', 'button').on('click', fun
 		$('#network-spinner').ace_spinner({
 			value: 2,
 			min: 2,
-			max: 100,
+			max: 3,
 			step: 1,
 			// on_sides: true,
 			icon_up:'ace-icon fa fa-plus bigger-110',
@@ -198,7 +198,7 @@ $('button[id="project-generate-button"]').attr('type', 'button').on('click', fun
 		$('#firewall-spinner').ace_spinner({
 			value: 1,
 			min: 1,
-			max: 100,
+			max: 5,
 			step: 1,
 			// on_sides: true,
 			icon_up:'ace-icon fa fa-plus bigger-110',

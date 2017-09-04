@@ -144,7 +144,7 @@ function cmdParser ( line, lineCount, callback ) {
 
 
 
-function RuleObject ( listOrder, interface, in_out, src_ip, dest_ip, protocol, src_port, dest_port, tcp_flags, action ) {
+function RuleObject ( listOrder, interface, in_out, src_ip, dest_ip, protocol, src_port, dest_port, tcp_flags, action, mode=false ) {
 	this.interface = interface;
 	this.in_out = in_out;
 	this.src_ip = src_ip;
@@ -154,7 +154,7 @@ function RuleObject ( listOrder, interface, in_out, src_ip, dest_ip, protocol, s
 	this.dest_port = dest_port;
 	this.tcp_flags = tcp_flags;
 	this.action = action;
-	this.mode = false;
+	this.mode = mode;
 	this.ruleOrder = undefined;
 	this.listOrder = listOrder;
 
@@ -264,3 +264,4 @@ function RuleObject ( listOrder, interface, in_out, src_ip, dest_ip, protocol, s
 
 
 module.exports = ACLFileObject;
+module.exports.RuleObject = RuleObject;

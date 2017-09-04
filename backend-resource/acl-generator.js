@@ -6,21 +6,28 @@ function ruleGenerator ( aclObject, geneInfo, ruleNumber=10 ) {
 	
 
 	Object.keys(geneInfo).sort().forEach(function ( curNode ) {
+
 		// aclObject[curNode]['cmdList'] = [];
 		let cmdList = [];
 		Object.keys(geneInfo[curNode]).sort().forEach(function ( curIf ) {
+			let policyList = [];
 			geneInfo[curNode][curIf].forEach(function ( curPolicy ) {
-				ruleDevelop(curPolicy, ruleNumber, function ( cmd ) {
-					// aclObject[curNode]['cmdList'] = aclObject[curNode]['cmdList'] || [];
-					// aclObject[curNode]['cmdList'].push(cmd);
-					cmdList.push(cmd);
-				});
+				if ( !checkElementIsExistInArray(curPolicy, policyList) ) { 
+					policyList.push(curPolicy);
+					// console.log(`${curNode} ${curIf}: `, policyList);
+					// console.log(`${curNode}-et${curIf}: `, curPolicy);
+					ruleDevelop(curPolicy, ruleNumber, function ( cmd ) {
+						// aclObject[curNode]['cmdList'] = aclObject[curNode]['cmdList'] || [];
+						// aclObject[curNode]['cmdList'].push(cmd);
+						cmdList.push(cmd);
+					});
+				}
 			});
 		});
 		aclObject[curNode] = new ACLObject(curNode, cmdList);
 	});
 
-
+	console.log(geneInfo);
 
 
 	function ruleDevelop( policy, ruleNumber, callback ) {

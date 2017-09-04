@@ -15,7 +15,7 @@ function QueueObject ( level=1, size=Math.pow(2,32)-1, circular=false ) {
 
 	this.push = function ( element ) {
 		if ( this.isFull() ) {
-			console.log('full');
+			console.log('queue full');
 			return;
 		}
 
@@ -52,7 +52,7 @@ function QueueObject ( level=1, size=Math.pow(2,32)-1, circular=false ) {
 
 	this.shift = function () {
 		if ( this.isEmpty() ) {
-			console.log('empyt');
+			console.log('queue empyt');
 			return;
 		}
 		var value;
@@ -121,7 +121,7 @@ function QueueObject ( level=1, size=Math.pow(2,32)-1, circular=false ) {
 		// 			return true;
 		// return false;
 	}
-	
+
 	this.init();
 	this.queue = queue;
 	// this.front = queueFront;

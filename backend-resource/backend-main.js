@@ -5,7 +5,8 @@ const path = require('path');
 const _ = require('underscore');
 const {dialog} = require('electron').remote;
 const topoUI = require( path.join(__dirname, 'topo-ui.js') );
-const ARARTree = require( path.join(__dirname, 'myarar.js') );
+const EARARTree = require( path.join(__dirname, 'enhanced-arar.js') );
+const ARARTree = require( path.join(__dirname, 'adaptive-rar.js') );
 const util = require('util'); // debug
 const QueueObject = require('./myqueue.js');
 
@@ -76,7 +77,8 @@ $('button[id="inspect-button"]').attr('type', 'button').on('click', function () 
 	let topoPath = myTopology(myObject.nodeDataArray, myObject.linkDataArray);
 
 	Object.keys(myObject['aclObject']).forEach(function ( nodeName, nodeNameCount ) {
-		myObject['aclObject'][nodeName]['ARARTree'] = new ARARTree(myObject['aclObject'][nodeName]['ruleList'], true, true, 2);
+		// myObject['aclObject'][nodeName]['ARARTree'] = new EARARTree(myObject['aclObject'][nodeName]['ruleList'], false, true, 1);
+		new ARARTree(myObject['aclObject'][nodeName]['ruleList']);
 	});
 
 
