@@ -74,7 +74,9 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
+
 								<div id="page-header" >
+
 									<div id="topo-content">
 										<div id="topo-header" class="block-header" style="font-size: 35px; padding-top: 8px; padding-bottom: 8px; font-weight: bold;" align="center">
 											<div class="row">
@@ -94,9 +96,9 @@
 														<i class="ace-icon fa fa-floppy-o bigger-100"></i>
 														Save
 													</button>
-													<button id="setting" class="btn btn-app btn-grey btn-xs">
+													<button id="clear-button" class="btn btn-app btn-grey btn-xs">
 														<i class="ace-icon fa fa-cog bigger-100"></i>
-														Setting
+														Clear
 													</button>
 													<button id="show-object" class="btn btn-app btn-grey btn-xs">
 														<i class="ace-icon fa fa-print bigger-100"></i>
@@ -108,85 +110,98 @@
 										</div>
 										<br>
 										<div id="topo-body">
-											<div id="topo-function" class="col-sm-1 widget-box" style="width: 7%; height:400px" align="center">
-												<!-- <div id="topo-palette" class="hidden" style="height:250px"></div> -->
-												
+
+											<!-- <div id="topo-function" class="col-sm-1" style="height:400px">
 												<div data-toggle="buttons" class="btn-group"  align="center" >
 													<label id="topo-pointer-button" class="btn btn-grey btn-default btn-round active" style="width: 90%">
 														<input name="function-button" type="radio" value="pointer">
-														<i class="ace-icon icon-only fa fa-mouse-pointer fa-2x"></i><br>
+														<i class="ace-icon icon-only fa fa-mouse-pointer fa-2x  fa-fw"></i><br>
 														Pointer
 													</label>
 													<label id="topo-firewall-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
 														<input name="function-button" type="radio" value="firewall">
-														<i class="ace-icon icon-only fa fa-calendar fa-2x"></i><br>
+														<i class="ace-icon icon-only fa fa-calendar fa-2x  fa-fw"></i><br>
 														Firewall
 													</label>
 													<label id="topo-network-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
 														<input name="function-button" type="radio" value="network">
-														<i class="ace-icon icon-only fa fa-cloud fa-2x"></i><br>
+														<i class="ace-icon icon-only fa fa-cloud fa-2x  fa-fw"></i><br>
 														Netwok
 													</label>
 													<label id="topo-link-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
 														<input name="function-button" type="radio" value="link">
-														<i class="ace-icon icon-only fa fa-arrows-h fa-2x"></i><br>
+														<i class="ace-icon icon-only fa fa-arrows-h fa-2x  fa-fw"></i><br>
 														Link
 													</label>
 												</div>
+											</div> -->
 
-												<!-- <button id="topo-pointer-button" class="btn btn-app btn-grey btn-xs ">
-													<i class="ace-icon fa fa-mouse-pointer bigger-160"></i>Pointer
-												</button>
-												<button id="topo-firewall-button" class="btn btn-app btn-grey btn-xs ">
-													<i class="ace-icon fa fa-calendar bigger-160"></i>Firewall
-												</button>
-												<button id="topo-network-button" class="btn btn-app btn-grey btn-xs ">
-													<i class="ace-icon fa fa-cloud bigger-160"></i>Network
-												</button>
-												<button id="topo-link-button" class="btn btn-app btn-grey btn-xs " data-toggle="button" aria-pressed="false">
-													<i class="ace-icon fa fa-arrows-h bigger-160"></i>Link
-												</button> -->
-												<!-- <button id="topo-inspect-button" class="btn  btn-grey btn-xs" data-toggle="button" aria-pressed="false">
-													<i class="ace-icon fa fa-arrows-h bigger-160"></i>LinkTest</button> -->
+											<div id="topo-function" class="col-sm-1" style="height:400px">
+												<div data-toggle="buttons" class="btn-group"  align="center" >
+
+													<label id="topo-pointer-button" class="btn btn-grey btn-light mybutton btn-round active">
+														<input name="function-button" type="radio" value="pointer">
+														<i class="ace-icon icon-only fa fa-mouse-pointer fa-2x  fa-fw"></i><br>
+														Pointer
+													</label>
+
+													<label id="topo-firewall-button" class="btn btn-grey mybutton btn-round">
+														<input name="function-button" type="radio" value="firewall">
+														<i class="ace-icon icon-only fa fa-calendar fa-2x  fa-fw"></i><br>
+														Firewall
+													</label>
+
+													<label id="topo-network-button" class="btn btn-grey mybutton btn-round">
+														<input name="function-button" type="radio" value="network">
+														<i class="ace-icon icon-only fa fa-cloud fa-2x  fa-fw"></i><br>
+														Netwok
+													</label>
+
+													<label id="topo-link-button" class="btn btn-grey mybutton btn-round">
+														<input name="function-button" type="radio" value="link">
+														<i class="ace-icon icon-only fa fa-arrows-h fa-2x  fa-fw"></i><br>
+														Link
+													</label>
+
+												</div>
+											</div>
+
+											<div id="topo-diagram" class="col-sm-10 widget-box" style="height:400px"></div>
+											
+											<div class="col-sm-1" style="height:400px">
+												
 												<button id="inspect-button" class="btn btn-app btn-grey btn-xs ">
 													<i class="ace-icon fa fa-caret-square-o-right bigger-160"></i>Inspect
 												</button>
-												<!-- <div id="topo-button" style="height:140px"></div> -->
+
 											</div>
-											<div id="topo-diagram" class="col-sm-11 widget-box" style="width: 92%; height:400px"></div>
-											<!-- <div id="topo-button" class="col-sm-2 widget-box" style="height:400px"></div> -->
-											<!-- <div class="col-sm-2 widget-box" style="height:400px">
-												<div id="topo-diagram-status" style="height:100px"></div>
-												<div id="topo-palette-status" style="height:100px"></div>
-											</div> -->
+
 										</div>
 									</div>
 									
 								</div>
-								<div id="page-body">
+								<div id="page-body" class="hidden">
+									<div class="row">
+										<div class="col-xs-12">
+											<div id="flowmap-header" class="block-header"  align="center">
+												<div class="row">
+													<div class="hr hr-24"></div>
+													<span style="font-size: 35px; padding-top: 8px; padding-bottom: 8px; font-weight: bold">
+													Flow Maps
+													</span>
+												</div>
+											</div>
+											<div id="flowmap-body">
+												<div class="tabbable">
+													<ul id="chart-tabs" class="nav nav-tabs"></ul>
+													<div id="tab-content" class="tab-content"></div>
+												</div>
+											</div>	
+										</div>
+									</div>
 									
 								</div>
 
-								<!-- /.modal-dialog -->
-
-								<!-- <div id="mypage-content">
-									<div id="mypage-header" class="block-header"><i class="fa fa-laptop"></i>&#160;&#160;Topology</div>
-									<input id="topo-input" type="file" data-show-preview="false">
-									<div id="mypage-body">
-
-									</div>
-								</div> -->
-
-
-
-								<!-- <hr> -->
-
-								<!-- <div class="hr hr32 hr-dotted"></div>
-
-								<div class="block-header" align="center">
-									<i class="fa fa-laptop"></i>
-									Flow Graph
-								</div> --><!-- /.block-header -->
 
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
@@ -243,6 +258,8 @@
 		<script src="backend-resource/myutils.js"></script>
 		<script src="backend-resource/topology-path.js"></script>
 		<script src="backend-resource/acl-generator.js"></script>
+		<script src="Highcharts-5.0.14/code/highcharts.js"></script>
+		<script src="Highcharts-5.0.14/code/highcharts-more.js"></script>
 		<script type="text/javascript">
 			require('./renderer.js')
 		</script>

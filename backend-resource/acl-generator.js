@@ -1,6 +1,6 @@
 const ACLObject = require(`${__dirname}/backend-resource/acl-file-parser.js`);
 
-function ruleGenerator ( aclObject, geneInfo, ruleNumber=10 ) {
+function ruleGenerator ( aclObject, geneInfo, ruleNumber=25, rangeSize=0 ) {
 	// console.log(aclObject);
 	// console.log(geneInfo);
 	
@@ -102,40 +102,6 @@ function ruleGenerator ( aclObject, geneInfo, ruleNumber=10 ) {
 		});
 
 
-
-		// cmd = `iptables -A OUTPUT -o eth2 -s 253.0.1.5/22 -d 140.134.30.0/24 --tcp-flags SYN,ACK,FIN,RST SYN,ACK -j DROP`;
-
-		// ruleCounter.forEach(function ( curItem ) {
-		// 	let flagList = [];
-		// 	let rule = {};
-		// 	rule['interface'] = `eth${policy.interface}`;
-		// 	rule['in_out'] = policy.in_out;
-		// 	rule['protocol'] = 'tcp';
-		// 	rule['src_ip'] = ipRandomization(policy.src_ip);
-		// 	rule['dest_ip'] = ipRandomization(policy.dest_ip);
-		// 	// rule['src_port'] = undefined;
-		// 	// rule['dest_port'] = undefined;
-
-
-		// 	for (let i=curItem.count; i>0; i--) {
-		// 		let newRule = deepcopy(rule);
-		// 		let curFlag = [];
-		// 		if ( curItem.mode === 1 ) {
-		// 			curFlag = statelessFlag[randomValue(0, statelessFlag.length-1)];
-		// 			while ( checkElementIsExistInArray(curFlag, flagList) ) {
-		// 				curFlag = statelessFlag[randomValue(0, statelessFlag.length-1)];
-		// 			}
-		// 			flagList.push(curFlag);
-		// 			newRule['tcp_flags'] = curFlag;
-		// 		}
-		// 		else {
-		// 			newRule['tcp_flags'] = curFlag;
-		// 		}
-		// 		newRule['action'] = actions[randomValue(0, 1)];
-		// 		callback(newRule);
-		// 	}
-		// });
-
 		function ipRandomization ( ipData ) {
 			let addr, min_ip, max_ip;
 			let mask, maskValue, maxMask, maskSigma;
@@ -146,10 +112,27 @@ function ruleGenerator ( aclObject, geneInfo, ruleNumber=10 ) {
 			max_ip = min_ip | ~(maskValue);
 			newAddrValue = randomValue(min_ip, max_ip);
 
-			newMask = randomValue(parseInt(mask), 24);
-			// console.log(mask, newMask);
+			// newMask = randomValue(parseInt(mask), 24);
+			switch ( rangeSize ) {
+				case '0':
+					minMask = (parseInt(mask) + 4) >= 32 ? 32 : (parseInt(mask) + 4);
+					maxMask = (minMask + 4) >= 32 ? 32 : (minMask + 4);
+
+					newMask = randomValue(minMask, maxMask);
+					break;
+
+				case '1':
+					newMask = (parseInt(mask) + 3) >= 32 ? 32 : (parseInt(mask) + 3);
+					break;
+
+				case '2':
+					minMask = parseInt(mask);
+					maxMask = (minMask + 2) >= 32 ? 32 : (minMask + 2);
+					newMask = randomValue(minMask, maxMask);
+					break;
+			}
+
 			newMaskValue = ( parseInt('1'.repeat(newMask), 2) << 32-newMask ) >>> 0;
-			// console.log(mask, newMask, newMaskValue, ipConvertor(newMaskValue));
 			newAddr = ipConvertor(newAddrValue & newMaskValue);
 			
 

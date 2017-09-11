@@ -454,7 +454,6 @@ function segmentation ( node, segmentMode, initialLevel ) {
 
 
 
-
 function checkIsNodeNeedToDoSegmentation ( node ) {
 	if ( node['ruleList'].length >= 2 )
 		if ( checkRuleRangeIsDifferent(node['ruleList']) )

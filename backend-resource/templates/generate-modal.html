@@ -13,33 +13,60 @@
 							
 							
 							<div class="form-group col-xs-6">
-								<div class="form-group col-xs-12">
-									<label class="col-xs-6 control-label no-padding-right">Number of network:&#160;&#160;</label>
-									<input type="text" id="network-spinner">
-								</div>
-								<div class="col-xs-1"><br><br><br></div>
-								<div class="control-group col-xs-11">
-									<div class="radio">
-										<label>
-											<input type="radio" class="ace" name="network-radio">
-											<span class="lbl">&#160;&#160;Random network address</span>
-										</label>
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="form-group col-xs-12">
+											<label class="col-xs-6 control-label no-padding-right" style="font-size: 16px">Number of network:&#160;&#160;</label>
+											<input type="text" id="network-spinner">
+										</div>
 									</div>
-									<div class="radio">
-										<label>
-											<input type="radio" class="ace" name="network-radio">
-											<span class="lbl">&#160;&#160;Customize networkaddress</span>
-										</label>
-									</div>
-									
 								</div>
-							</div>
 								
+
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="form-group">
+											<label class="col-xs-7 control-label no-padding-right" style="font-size: 16px">Range size of IP address:&#160;</label>
+											
+											<div class="control-group col-xs-5">
+												<div class="radio">
+													<label>
+														<input type="radio" class="ace" name="range-radio" value="0" checked="checked">
+														<span class="lbl">&#160;&#160;Small</span>
+													</label>
+												</div>
+												<div class="radio">
+													<label>
+														<input type="radio" class="ace" name="range-radio" value="1">
+														<span class="lbl">&#160;&#160;Medium</span>
+													</label>
+												</div>
+												<div class="radio">
+													<label>
+														<input type="radio" class="ace" name="range-radio" value="2">
+														<span class="lbl">&#160;&#160;Large</span>
+													</label>
+												</div>
+												
+											</div>
+
+										</div>
+										
+									</div>
+								</div>
+								
+
+							</div>
+							
 								
 							
 							<div class="form-group col-xs-6">
-								<label class="col-xs-6 control-label no-padding-right">Number of firewall:&#160;&#160;</label>
-								<input type="text" id="firewall-spinner">
+								<div class="row">
+									<div class="col-xs-12">
+										<label class="col-xs-6 control-label no-padding-right"style="font-size: 16px">Number of firewall:&#160;&#160;</label>
+										<input type="text" id="firewall-spinner">
+									</div>
+								</div>
 							</div>
 
 							
@@ -52,8 +79,14 @@
 						<div class="col-xs-12">
 							<form class="form-horizontal" role="form">
 								<div class="form-group col-xs-12">
-									<label class="col-xs-6 control-label no-padding-right">Number of rules for each interface of each firewall:&#160;&#160;</label>
-									<input type="text" id="rule-spinner">
+									<div class="row">
+										<div class="col-xs-12">
+											<label class="col-xs-5 control-label no-padding-right" style="font-size: 16px">
+												Number of rules for each flow per hop:&#160;&#160;
+											</label>
+											<input type="text" id="rule-spinner">
+										</div>
+									</div>
 								</div>
 								<div></div>
 							</form>

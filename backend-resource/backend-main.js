@@ -6,7 +6,7 @@ const _ = require('underscore');
 const {dialog} = require('electron').remote;
 const topoUI = require( path.join(__dirname, 'topo-ui.js') );
 const EARARTree = require( path.join(__dirname, 'enhanced-arar.js') );
-const ARARTree = require( path.join(__dirname, 'adaptive-rar.js') );
+// const ARARTree = require( path.join(__dirname, 'adaptive-rar.js') );
 const util = require('util'); // debug
 const QueueObject = require('./myqueue.js');
 
@@ -74,19 +74,76 @@ $('button[id="project-save-button"]').attr('type', 'button').on('click', functio
  */
 $('button[id="inspect-button"]').attr('type', 'button').on('click', function () {
 	console.log('inspect');
-	let topoPath = myTopology(myObject.nodeDataArray, myObject.linkDataArray);
+	let segmentMode = true;
+	let useExchange = true;
+	let initialLevel = 2;
+	let interRuleList = [], fwCount = 0;
+	myObject['topoPath'] = myTopology(myObject.nodeDataArray, myObject.linkDataArray);
 
 	Object.keys(myObject['aclObject']).forEach(function ( nodeName, nodeNameCount ) {
-		// myObject['aclObject'][nodeName]['ARARTree'] = new EARARTree(myObject['aclObject'][nodeName]['ruleList'], false, true, 1);
-		new ARARTree(myObject['aclObject'][nodeName]['ruleList']);
+		if ( nodeName === 'interTree' ) return;
+		let curNode = myObject['aclObject'][nodeName];
+		if ( curNode['ruleList'].length === 0 ) return;
+
+		curNode['ARARTree'] = new EARARTree(curNode['ruleList'], segmentMode, useExchange, initialLevel);
+		
+		for (var i = 0; i < curNode['ruleList'].length; i++) {
+			interRuleList.push(curNode['ruleList'][i]);
+		}
+		
+		checkAnomaly(curNode, segmentMode);
+		fwCount++;
 	});
 
+	if ( fwCount > 1 ) {
+		myObject['aclObject']['interTree'] = new InterTree(interRuleList);
+		myObject['aclObject']['interTree']['ARARTree'] = new EARARTree(myObject['aclObject']['interTree']['ruleList'], segmentMode, useExchange, initialLevel);
+		
+		checkAnomaly(myObject['aclObject']['interTree'], segmentMode);
+	}
 
-	// console.log(curPath);
-	// curPath.showTopo();
-	// curPath.showPath();
-	// curPath.showNode();
-	// curPath.show();
+	
+	myObject.isInspect = true;
+	depictResult();
+
+	function checkAnomaly ( node, segmentMode ) {
+		// simple anomaly check
+		if ( segmentMode ) {
+			node['ARARTree']['leafList'].forEach(function ( leaf, leafCount ) {
+				if ( leaf['flag'] ) {
+					if ( leaf['ruleList'].length === 1 ) {
+						leaf['anomaly'] = true;
+					} else if ( checkIsAnomalyNode(leaf) ) { 
+						leaf['anomaly'] = true;
+					} else { 
+						leaf['anomaly'] = false;
+					}
+				} else { 
+					leaf['anomaly'] = false;
+				}
+			});
+		} else {}
+	}
+
+	function checkIsAnomalyNode ( node ) {
+		for (let dataCount=0; dataCount<node['ruleList'].length; dataCount++) {
+			let data = node['ruleList'][dataCount];
+			if ( data['tcp_flags'].length === 0 ) continue;
+			for (let cmpDataCount=0; cmpDataCount<node['ruleList'].length; cmpDataCount++) {
+				if ( cmpDataCount === dataCount ) break;
+				let cmpData = node['ruleList'][cmpDataCount];
+
+			}
+		}
+		return false;
+	}
+
+	function InterTree ( ruleList ) {
+		this.nodeName = 'interTree';
+		this.ruleList = ruleList;
+		this.ARARTree = undefined;
+	}
+
 });
 
 
@@ -101,14 +158,13 @@ function myThesisObject ( item=null ) {
 		this.nodeDataArray = [];
 		this.linkDataArray = [];
 		this.aclObject = {};
-		
-	}
-	else {
+		this.isInspect = false;
+	} else {
 		this.filepath = item.filepath;
 		this.nodeDataArray = item.nodeDataArray;
 		this.linkDataArray = item.linkDataArray;
 		this.aclObject = item.aclObject;
-		
+		this.isInspect = item.isInspect;
 	}
 
 	this.showObject = function ( mode=false ) {
@@ -122,21 +178,11 @@ function myThesisObject ( item=null ) {
 	}
 	this.update = function () {
 		topoUI.update(this);
+		if ( this.isInspect ) depictResult();
 	}
 
 	
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -145,39 +191,132 @@ function myThesisObject ( item=null ) {
  */
 let myObject = new myThesisObject();
 
-// myObject.nodeDataArray = [
-// 	{ key: 'firewall1', category: 'firewall', label: 'firewall1', __gohashid: 438 }
-// ];
-
 myObject.start();
 
 
-$('button[id="setting"]').attr('type', 'button').on('click', function() {
-	console.log('setting pressed');
+$('button[id="clear-button"]').attr('type', 'button').on('click', function() {
+	console.log('clear pressed');
 
-
-	let queue = new QueueObject(3, 10, true);
-	// queue.push(`[test]`);
-	// console.log(queue.shift());
-	// queue.push(`[test1]`);
-	// queue.push(`[test2]`);
-	// console.log(queue.shift());
-	// console.log(queue.shift());
-
-
-	for (var i = 0; i < 2000; i++) {
-		if ( !queue.isFull() )
-			queue.push(`[${i}]`);
-	}
-	console.log(queue);
-	for (var i = 0; i < 2000; i++) {
-		if ( !queue.isEmpty() )
-			console.log(queue.shift());
-	}
-	console.log(queue);
-	// queue.shift();
+	$('#chart-tabs').empty();
+	$('#tab-content').empty();
+	if ( !$('#page-body').hasClass('hidden') ) $('#page-body').addClass('hidden');
+	myObject = new myThesisObject();
+	myObject.update();
 });
 
 $('button[id="show-object"]').attr('type', 'button').on('click', function() {
 	myObject.showObject();
 });
+
+
+function clickTest ( event ) {
+	// console.log(event);
+	console.log(this);
+}
+
+
+function depictResult () {
+	if ( $('#page-body').hasClass('hidden') ) $('#page-body').removeClass('hidden');
+	$('#chart-tabs').empty();
+	$('#tab-content').empty();
+
+	Object.keys(myObject['aclObject']).forEach(function ( nodeName, nodeNameCount ) {
+		let curNode = myObject['aclObject'][nodeName];
+		let chartID = `chart-${nodeName}`;
+		let $tab = `<li id="li-${nodeName}"><a data-toggle="tab" href="#tab-${nodeName}">${nodeName}</a></li>`;
+		let $chart = `<div id="tab-${nodeName}" class="tab-pane fade"><div id="${chartID}" style="height:400px"></div></div>`;
+
+		$($tab).appendTo('#chart-tabs');
+		$($chart).appendTo('#tab-content');
+
+		if ( nodeNameCount === 0 ) {
+			$(`#tab-${nodeName}`).addClass('in active');
+			$(`#li-${nodeName}`).addClass('active');
+		}
+
+
+		createHighcharts(chartID, curNode['ARARTree']['leafList']);
+	});
+
+	function createHighcharts ( chartID, dataList ) {
+		let chart = {
+			chart: { type: 'arearange', zoomType: 'xy'},
+			title: { text: null },
+			tooltip: { 
+				followPointer: true,
+				useHTML: true,
+				headerFormat: `<div class="center" style="font-size: 14px; font-weight: bold">{series.name}</div></hr><div><table>`,
+				footerFromat: '</table></div>',
+				pointFormatter: function () {
+					var str =	`<tr>\
+									<td>Src:&#160;</td>\
+									<td>${ipConvertor(this.series.xData[0])}</td>\
+									<td>&#160;~&#160;</td>\
+									<td>${ipConvertor(this.series.xData[1])}</td>\
+								</tr>\
+								<tr>\
+									<td>Dest:&#160;</td>\
+									<td>${ipConvertor(this.low)}</td>\
+									<td>&#160;~&#160;</td>\
+									<td>${ipConvertor(this.high)}</td>\
+								</tr>`;
+					
+					return str;
+				},
+			},
+
+			plotOptions: {
+				series: {
+					stickyTracking: false,
+					trackByArea: true,
+					showInLegend: false,
+					fillOpacity: 0.5,
+					lineWidth: 0.5,
+					marker: { enabled: false, states: { hover: { enabled: false } } },
+					cursor: 'pointer',
+					events: { click: clickTest },
+				}
+			},
+			xAxis: {
+				title: "",
+				labels: { formatter: function () { return ipConvertor(this.value); } },
+				floor: 0,
+				ceiling: 4294967295,
+			},
+
+			yAxis: {
+				title: "",
+				labels: { formatter: function () { return ipConvertor(this.value); } },
+				floor: 0,
+				ceiling: 4294967295,
+			}
+		};
+		chart.series = createSeries(dataList);
+		Highcharts.chart(chartID, chart);
+	}
+	
+	function createSeries ( dataList ) {
+		let seriesList = [];
+
+		dataList.forEach(function ( data, dataCount ) {
+			let series, xBase, yBase, xMin, xMax, yMin, yMax;
+			let para = data['parameter'];
+			let lvl = para['nodeLevel'];
+			let maxMask = 32;
+
+			xMin = ((~(1 << (maxMask - lvl)) & para['rsvSrc']) | para['baseSrc']) >>> 0;
+			yMin = ((~(1 << (maxMask - lvl)) & para['rsvDest']) | para['baseDest']) >>> 0;
+			xMax = ((((1 << (maxMask - lvl)) - 1) | para['rsvSrc']) | para['baseSrc']) >>> 0;
+			yMax = ((((1 << (maxMask - lvl)) - 1) | para['rsvDest']) | para['baseDest']) >>> 0;
+
+			series = { 
+				name: `block ${dataCount}`, color: '#90ed7d',
+				data: [{ x: xMin, low: yMin, high: yMax }, { x: xMax, low: yMin, high: yMax }],
+			};
+			if ( data['anomaly'] ) { series.color = '#f45b5b'; }
+			seriesList.push(series);
+		});
+		
+		return seriesList;
+	}
+}

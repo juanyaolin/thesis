@@ -9,6 +9,7 @@ const modalDepict = require( './modal-depict.js');
 
 let $s, myOperate, myDiagram, curThesisObj;
 let nodeBeenDoubleClicked, curNodeACLObj;
+let preAction, curAction = 'topo-pointer-button';
 
 
 function diagramOperate () {
@@ -34,8 +35,14 @@ function diagramOperate () {
  */
 $('input[name="function-button"]').change( function ( e ) {
 	// console.log(e.target.value);
+	preAction = curAction;
+	curAction = e.currentTarget.parentNode.id;
+	if ( preAction !== undefined ) 
+		$(`#${preAction}`).removeClass('btn-light');
+	$(`#${curAction}`).addClass('btn-light');
 	let mode, itemType;
 	myDiagram.startTransaction();
+
 
 	// if ( e.target.value == 'firewall' || e.target.value == 'network' ) {
 	// 	mode = 'node';
@@ -87,15 +94,23 @@ $('button[id="project-generate-button"]').attr('type', 'button').on('click', fun
 	$modal.on('show.bs.modal', function () {
 		$confirm.on('click', function () {
 			console.log('confirm');
-			let nodeData, counter = {
+			let nodeData;
+			// counter = {
+			// 	network: document.getElementById('network-spinner').value,
+			// 	firewall: document.getElementById('firewall-spinner').value,
+			// 	rule: document.getElementById('rule-spinner').value,
+			// };
+			curThesisObj['geneInfo'] = {
+				rangeSize: $('input[name="range-radio"]:checked').val(),
 				network: document.getElementById('network-spinner').value,
 				firewall: document.getElementById('firewall-spinner').value,
 				rule: document.getElementById('rule-spinner').value,
 			};
 			
-			Object.keys(counter).forEach(function ( nodeType, typeCount ) {
+			Object.keys(curThesisObj['geneInfo']).forEach(function ( nodeType, typeCount ) {
 				if ( nodeType === 'rule' ) return;
-				for (let i=0; i<counter[nodeType]; i++) {
+				else if ( nodeType === 'rangeSize' ) return;
+				for (let i=0; i<curThesisObj['geneInfo'][nodeType]; i++) {
 					if ( nodeType === 'network' ) {
 						myDiagram.model.addNodeData(new NewNode(nodeType, `${i+1}.0.0.0/8`));
 					}
@@ -105,8 +120,8 @@ $('button[id="project-generate-button"]').attr('type', 'button').on('click', fun
 
 			linkNode();
 
-			let curPath = myTopology(curThesisObj.nodeDataArray, curThesisObj.linkDataArray);
-			ruleGenerator(curThesisObj.aclObject, curPath.generateObject);
+			let curPath = new myTopology(curThesisObj.nodeDataArray, curThesisObj.linkDataArray);
+			ruleGenerator(curThesisObj.aclObject, curPath.generateObject, curThesisObj['geneInfo'].rule, curThesisObj['geneInfo'].rangeSize);
 
 
 
@@ -208,10 +223,10 @@ $('button[id="project-generate-button"]').attr('type', 'button').on('click', fun
 		});
 
 		$('#rule-spinner').ace_spinner({
-			value: 100,
-			min: 100,
-			max: 10000,
-			step: 100,
+			value: 25,
+			min: 25,
+			max: 250,
+			step: 25,
 			// on_sides: true,
 			icon_up:'ace-icon fa fa-plus bigger-110',
 			icon_down:'ace-icon fa fa-minus bigger-110',

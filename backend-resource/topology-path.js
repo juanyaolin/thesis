@@ -157,7 +157,6 @@ function myTopology ( nodeDataArray, linkDataArray ) {
 	this.show = function () {
 		console.log(this.generateObject);
 	}
-	return this;
 
 
 
@@ -186,7 +185,6 @@ function myTopology ( nodeDataArray, linkDataArray ) {
 		this.nodeName = nodeName;
 		this.interface = interface;
 		this.in_out = in_out;
-		return this;
 	}
 
 }
