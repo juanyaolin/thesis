@@ -3,62 +3,74 @@
 		<div class="modal-content">
 			<div class="modal-header">
 				<button id="modal-close-button" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-				<h1 class="center bigger-200 lighter grey no-margin">Title</h1>
+				<h1 id="modal-title" class="center bigger-250 stronger grey no-margin"></h1>
 			</div>
 
-			<div class="modal-body">
-				<div class="row center">
-					<button id="import-acl-button" class="btn btn-app btn-grey btn-xs">Import<br>ACL</button>
-					<button id="export-acl-button" class="btn btn-app btn-grey btn-xs">Export<br>ACL</button>
-				</div>
+			<div class="modal-body" style="height: 500px">
 				
-
-
 				<div class="tabbable tabs-left">
-					<ul id="acl-tabs" class="nav nav-tabs">
-						<li class="active"><a data-toggle="tab" href="#eth0" aria-expanded="true">eth0</a></li>
-						<li id="modal-addtab-li"><a id="modal-addtab-button" type="button" aria-expanded="true">
-							<i class="ace-icon fa fa-plus"></i>
-						</a></li>
-					</ul>
-
-					<div id="acl-table" class="tab-content">
-						<div id="eth0" class="tab-pane active">
-							<div class="scrollable">
-								<table class="table table-bordered table-hover">
-									<thead>
-										<tr>
-											<th>In/Out</th>
-											<th>Order</th>
-											<th>Protocol</th>
-											<th>Src IP</th>
-											<th>Dest IP</th>
-											<th>Flag</th>
-											<th>Action</th>
-										</tr>
-									</thead>
-									<tbody></tbody>
-								</table>
-							</div>
-						</div>
-					</div>
+					<ul id="acl-tabs" class="nav nav-tabs"> </ul>
+					<div id="acl-table" class="tab-content"> </div>
 				</div>
 
 			</div>
 
 			<div class="modal-footer">
-				<div class="btn-group">
-					<button id="modal-close-button" class="btn btn-sm btn-danger pull-right" data-dismiss="modal">
-						<i class="ace-icon fa fa-times"></i>
-						Close
-					</button>
-					
-					<button id="modal-confirm-button" class="btn btn-sm btn-success">
-						<i class="ace-icon fa fa-check"></i>
-						Confirm
-					</button>
+				<div class="row">
+
+					<div class="col-xs-4">
+						<div class="btn-group pull-left">
+							<div class="row">
+								<div class="col-xs-12">
+									<button id="import-acl-button" class="btn btn-sm">
+										<i class="ace-icon fa fa-sign-in"></i>
+										Import
+									</button>
+									<button id="export-acl-button" class="btn btn-sm">
+										<i class="ace-icon fa fa-sign-out"></i>
+										Export
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-4 center">
+						<div class="btn-group">
+							<div class="row">
+								<div class="col-xs-12">
+									<!-- <button id="add-rule-button" class="btn btn-sm" > -->
+									<button id="add-rule-button" class="btn btn-sm">
+										<i class="ace-icon fa fa-plus"></i>
+										Add Rule
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<div class="col-xs-4">
+						<div class="btn-group pull-right">
+							<div class="row">
+								<div class="col-xs-12">
+									<button id="modal-confirm-button" class="btn btn-sm btn-success">
+										<i class="ace-icon fa fa-check"></i>
+										Confirm
+									</button>
+									<button id="modal-close-button" class="btn btn-sm btn-danger" data-dismiss="modal">
+										<i class="ace-icon fa fa-times"></i>
+										Close
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
+
 			</div>
+
+			
 			
 		</div><!-- /.modal-content -->
 	</div>

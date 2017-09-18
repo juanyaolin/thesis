@@ -27,7 +27,7 @@ function ruleGenerator ( aclObject, geneInfo, ruleNumber=25, rangeSize=0 ) {
 		aclObject[curNode] = new ACLObject(curNode, cmdList);
 	});
 
-	console.log(geneInfo);
+	// console.log(geneInfo);
 
 
 	function ruleDevelop( policy, ruleNumber, callback ) {
@@ -94,7 +94,7 @@ function ruleGenerator ( aclObject, geneInfo, ruleNumber=25, rangeSize=0 ) {
 					flagList.push(tcp_flags);
 					newCmd += ` --tcp-flags SYN,ACK,FIN,RST ${tcp_flags}`;
 				}
-				newCmd += ` -j ${actions[randomValue(0, 1)]}`;
+				newCmd += ` -j ${actions[randomValue(0, 2) % 2]}`;
 				// console.log(newCmd);
 				callback(newCmd);
 			}

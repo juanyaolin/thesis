@@ -144,7 +144,7 @@ function cmdParser ( line, lineCount, callback ) {
 
 
 
-function RuleObject ( listOrder, interface, in_out, src_ip, dest_ip, protocol, src_port, dest_port, tcp_flags, action, mode=false ) {
+function RuleObject ( listOrder, interface, in_out, src_ip, dest_ip, protocol, src_port, dest_port, tcp_flags, action, isExchange=false ) {
 	this.interface = interface;
 	this.in_out = in_out;
 	this.src_ip = src_ip;
@@ -154,7 +154,7 @@ function RuleObject ( listOrder, interface, in_out, src_ip, dest_ip, protocol, s
 	this.dest_port = dest_port;
 	this.tcp_flags = tcp_flags;
 	this.action = action;
-	this.mode = mode;
+	this.isExchange = isExchange;
 	this.ruleOrder = undefined;
 	this.listOrder = listOrder;
 

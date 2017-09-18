@@ -7,6 +7,7 @@ function ARARTree ( inputData, segmentMode=false, useExchange=true, initialLevel
 	let treeRoot, node, ruleList = [], leafList = [];
 	let queue = new QueueObject(3, Math.pow(2,32)-1, true);
 	let exchangedInputData;
+	
 
 	
 	// if need to exchange
@@ -22,7 +23,7 @@ function ARARTree ( inputData, segmentMode=false, useExchange=true, initialLevel
 	
 	// convert the ruleList
 	ruleList = inputDataConvertor(ruleList);
-	console.log(ruleList);
+	console.log(ruleList.length);
 	
 	
 
@@ -51,22 +52,33 @@ function ARARTree ( inputData, segmentMode=false, useExchange=true, initialLevel
 			if ( node['node11'] ) { queue.push(node['node11']); childSum++;	}
 
 			if ( (childSum === 0) && (node['ruleList'].length > 0) ) {
-				let newDataList = [];
+				let newDataList = [], dataObject = {};
 				node['ruleList'].forEach(function ( data ) {
 					let newData;
 					if ( useExchange ) {
-						if ( data['mode'] ) {
+						if ( data['isExchange'] ) {
 							newData = exchangedInputData[data['listOrder']];
 						} else {
 							newData = inputData[data['listOrder']];
 						}
-						newDataList.push(newData);
 					} else {
 						newData = inputData[data['listOrder']];
-						newDataList.push(newData);
 					}
+
+					ex = newData['isExchange'];
+					name = newData['nodeName'];
+					itf = newData['interface'];
+					io = newData['in_out'];
+
+					dataObject[ex] = dataObject[ex] || {};
+					dataObject[ex][name] = dataObject[ex][name] || {};
+					dataObject[ex][name][itf] = dataObject[ex][name][itf] || {};
+					dataObject[ex][name][itf][io] = dataObject[ex][name][itf][io] || [];
+					dataObject[ex][name][itf][io].push(newData);
+					newDataList.push(newData);
 				});
 				node['ruleList'] = newDataList;
+				node['ruleObject'] = dataObject;
 				leafList.push(node);
 			}
 		} else break;
@@ -74,7 +86,7 @@ function ARARTree ( inputData, segmentMode=false, useExchange=true, initialLevel
 	
 	createTime = process.hrtime(startTime);
 	console.log(`createTime: ` + (createTime[0] + createTime[1]/1e9) + `sec`);
-	console.log(leafList.length);
+	// console.log(leafList.length);
 
 	// this.treeRoot = treeRoot;
 	this.leafList = leafList;
@@ -86,14 +98,14 @@ function ARARTree ( inputData, segmentMode=false, useExchange=true, initialLevel
 /*	[ARARRule Constructor]
  *	@ parameter
  */
-function ARARRule ( listOrder, min_sip, max_sip, min_dip, max_dip, flag, mode ) {
+function ARARRule ( listOrder, min_sip, max_sip, min_dip, max_dip, flag, isExchange ) {
 	this.listOrder = listOrder;
 	this.min_sip = min_sip;
 	this.max_sip = max_sip;
 	this.min_dip = min_dip;
 	this.max_dip = max_dip;
 	this.flag = flag;
-	this.mode = mode;
+	this.isExchange = isExchange;
 }
 
 function ARARNode ( segmentMode, parameter=undefined ) {
@@ -212,7 +224,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 		ruleLocate[1] =  Math.floor( curRule['max_sip'] / rsvSrcReal );
 		ruleLocate[2] =  Math.floor( curRule['min_dip'] / rsvDestReal );
 		ruleLocate[3] =  Math.floor( curRule['max_dip'] / rsvDestReal );
-		// newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['mode']);
+		// newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 		switch ( ruleLocate.join('') ) {
 			case '0000':
 			/* case '0000'
@@ -293,7 +305,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 			 *  -----------
 			 */
 
-				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], (rsvSrcReal - 1), curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], (rsvSrcReal - 1), curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 				if ( node['node00'] === undefined )
 					node['node00'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -301,7 +313,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 						node['node00']['flag'] = true;
 				node['node00']['ruleList'].push(newRule);
 
-				newRule = new ARARRule(curRule['listOrder'], rsvSrcReal, curRule['max_sip'], curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], rsvSrcReal, curRule['max_sip'], curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 				if ( node['node10'] === undefined )
 					node['node10'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -319,7 +331,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 			 * |     |     |
 			 *  -----------
 			 */
-				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], curRule['min_dip'], (rsvDestReal - 1), curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], curRule['min_dip'], (rsvDestReal - 1), curRule['flag'], curRule['isExchange']);
 				if ( node['node00'] === undefined )
 					node['node00'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -327,7 +339,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 						node['node00']['flag'] = true;
 				node['node00']['ruleList'].push(newRule);
 
-				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], rsvDestReal, curRule['max_dip'], curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], rsvDestReal, curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 				if ( node['node01'] === undefined )
 					node['node01'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -345,7 +357,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 			 * |     |     |
 			 *  -----------
 			 */
-				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], (rsvSrcReal - 1), curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], (rsvSrcReal - 1), curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 				if ( node['node01'] === undefined )
 					node['node01'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -353,7 +365,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 						node['node01']['flag'] = true;
 				node['node01']['ruleList'].push(newRule);
 
-				newRule = new ARARRule(curRule['listOrder'], rsvSrcReal, curRule['max_sip'], curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], rsvSrcReal, curRule['max_sip'], curRule['min_dip'], curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 				if ( node['node11'] === undefined )
 					node['node11'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -371,7 +383,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 			 * |     |     |
 			 *  -----------
 			 */
-			 	newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], curRule['min_dip'], (rsvDestReal - 1), curRule['flag'], curRule['mode']);
+			 	newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], curRule['min_dip'], (rsvDestReal - 1), curRule['flag'], curRule['isExchange']);
 				if ( node['node10'] === undefined )
 					node['node10'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -379,7 +391,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 						node['node10']['flag'] = true;
 				node['node10']['ruleList'].push(newRule);
 
-				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], rsvDestReal, curRule['max_dip'], curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], curRule['max_sip'], rsvDestReal, curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 				if ( node['node11'] === undefined )
 					node['node11'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -397,7 +409,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 			 * |     |     |
 			 *  -----------
 			 */
-			 	newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], (rsvSrcReal - 1), curRule['min_dip'], (rsvDestReal - 1), curRule['flag'], curRule['mode']);
+			 	newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], (rsvSrcReal - 1), curRule['min_dip'], (rsvDestReal - 1), curRule['flag'], curRule['isExchange']);
 				if ( node['node00'] === undefined )
 					node['node00'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -405,7 +417,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 						node['node00']['flag'] = true;
 				node['node00']['ruleList'].push(newRule);
 
-				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], (rsvSrcReal - 1), rsvDestReal, curRule['max_dip'], curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], curRule['min_sip'], (rsvSrcReal - 1), rsvDestReal, curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 				if ( node['node01'] === undefined )
 					node['node01'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -413,7 +425,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 						node['node01']['flag'] = true;
 				node['node01']['ruleList'].push(newRule);
 
-				newRule = new ARARRule(curRule['listOrder'], rsvSrcReal, curRule['max_sip'], curRule['min_dip'], (rsvDestReal - 1), curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], rsvSrcReal, curRule['max_sip'], curRule['min_dip'], (rsvDestReal - 1), curRule['flag'], curRule['isExchange']);
 				if ( node['node10'] === undefined )
 					node['node10'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -421,7 +433,7 @@ function segmentation ( node, segmentMode, initialLevel ) {
 						node['node10']['flag'] = true;
 				node['node10']['ruleList'].push(newRule);
 
-				newRule = new ARARRule(curRule['listOrder'], rsvSrcReal, curRule['max_sip'], rsvDestReal, curRule['max_dip'], curRule['flag'], curRule['mode']);
+				newRule = new ARARRule(curRule['listOrder'], rsvSrcReal, curRule['max_sip'], rsvDestReal, curRule['max_dip'], curRule['flag'], curRule['isExchange']);
 				if ( node['node11'] === undefined )
 					node['node11'] = new ARARNode(segmentMode);
 				if ( segmentMode )
@@ -490,7 +502,7 @@ function inputDataConvertor ( dataList ) {
 		src_ip = new AddressPrefixObject(data['src_ip']);
 		dest_ip = new AddressPrefixObject(data['dest_ip']);
 		if ( data['tcp_flags'].length > 0 ) flag = true;
-		newData = new ARARRule(data['listOrder'], src_ip['ipMinNumber'], src_ip['ipMaxNumber'], dest_ip['ipMinNumber'], dest_ip['ipMaxNumber'], flag, data['mode']);
+		newData = new ARARRule(data['listOrder'], src_ip['ipMinNumber'], src_ip['ipMaxNumber'], dest_ip['ipMinNumber'], dest_ip['ipMaxNumber'], flag, data['isExchange']);
 		newDataList.push(newData);
 	}
 	return newDataList;

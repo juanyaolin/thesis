@@ -49,8 +49,8 @@
 		<![endif]-->
 	</head>
 
-	<body class="skin-3">
-		<div id="navbar" class="navbar navbar-default          ace-save-state">
+	<body class="skin-3 no-skin">
+		<div id="navbar" class="navbar navbar-default ace-save-state">
 			<div class="navbar-container ace-save-state" id="navbar-container">
 				<div class="navbar-header pull-left">
 					<a href="index.html" class="navbar-brand">
@@ -97,7 +97,13 @@
 														Save
 													</button>
 													<button id="clear-button" class="btn btn-app btn-grey btn-xs">
-														<i class="ace-icon fa fa-cog bigger-100"></i>
+														<!-- <i class="ace-icon fa fa-cog bigger-100"></i> -->
+														<i class="ace-icon" style="font-size: 0.8em">
+															<span class="fa-stack">
+																<i class="fa fa-file-o fa-stack-2x"></i>
+																<i class="fa fa-times fa-stack-2x"></i>
+															</span>
+														</i>
 														Clear
 													</button>
 													<button id="show-object" class="btn btn-app btn-grey btn-xs">
@@ -202,6 +208,26 @@
 									
 								</div>
 
+								<div class="row">
+									<div class="col-xs-12">
+										<button id="add-test" class="btn">+</button>
+										<button id="red-test" class="btn">-</button>
+										<button id="show-test" class="btn">Show</button>
+									</div>
+								</div>
+								
+
+
+								<!-- <button class="btn btn-app btn-grey btn-xs">
+									<i class="ace-icon" style="font-size: 0.8em">
+										<span class="fa-stack">
+											<i class="fa fa-file-o fa-stack-2x"></i>
+											<i class="fa fa-times fa-stack-2x"></i>
+										</span>
+									</i>
+									Show
+								</button> -->
+
 
 								<!-- PAGE CONTENT ENDS -->
 							</div><!-- /.col -->
@@ -238,6 +264,7 @@
 		<!--[if lte IE 8]>
 		  <script src="assets/js/excanvas.min.js"></script>
 		<![endif]-->
+		<script src="assets/js/jquery-ui.min.js"></script>
 		<script src="assets/js/jquery-ui.custom.min.js"></script>
 		<script src="assets/js/jquery.ui.touch-punch.min.js"></script>
 		<script src="assets/js/jquery.easypiechart.min.js"></script>
