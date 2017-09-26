@@ -31,8 +31,9 @@
 		<![endif]-->
 
 		<!-- inline styles related to this page -->
-		<link href="assets/plugins/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet">
-    	<link href="assets/plugins/fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" />
+		<!-- <link href="assets/plugins/jquery-ui-1.12.1/jquery-ui.min.css" rel="stylesheet"> -->
+    	<!-- <link href="assets/plugins/fileinput/css/fileinput.min.css" media="all" rel="stylesheet" type="text/css" /> -->
+		<link rel="stylesheet" type="text/css" href="assets/css/light/all.min.css" />
 		<link id="themecss" rel="stylesheet" type="text/css" href="assets/css/light/new.css" />
 		<link rel="stylesheet" type="text/css" href="assets/custom/css/mycss.css">
 
@@ -49,8 +50,8 @@
 		<![endif]-->
 	</head>
 
-	<body class="skin-3 no-skin">
-		<div id="navbar" class="navbar navbar-default ace-save-state">
+	<body class="no-skin">
+		<div id="navbar" class="navbar navbar-default ace-save-state" style="background: #404040">
 			<div class="navbar-container ace-save-state" id="navbar-container">
 				<div class="navbar-header pull-left">
 					<a href="index.html" class="navbar-brand">
@@ -74,8 +75,7 @@
 						<div class="row">
 							<div class="col-xs-12">
 								<!-- PAGE CONTENT BEGINS -->
-
-								<div id="page-header" >
+								<div id="page-header">
 
 									<div id="topo-content">
 										<div id="topo-header" class="block-header" style="font-size: 35px; padding-top: 8px; padding-bottom: 8px; font-weight: bold;" align="center">
@@ -88,24 +88,6 @@
 														Generate
 													</button>
 
-													<button id="project-load-button" class="btn btn-app btn-grey btn-xs">
-														<i class="ace-icon fa fa-file-text-o bigger-100"></i>
-														Load
-													</button>
-													<button id="project-save-button" class="btn btn-app btn-grey btn-xs">
-														<i class="ace-icon fa fa-floppy-o bigger-100"></i>
-														Save
-													</button>
-													<button id="clear-button" class="btn btn-app btn-grey btn-xs">
-														<!-- <i class="ace-icon fa fa-cog bigger-100"></i> -->
-														<i class="ace-icon" style="font-size: 0.8em">
-															<span class="fa-stack">
-																<i class="fa fa-file-o fa-stack-2x"></i>
-																<i class="fa fa-times fa-stack-2x"></i>
-															</span>
-														</i>
-														Clear
-													</button>
 													<button id="show-object" class="btn btn-app btn-grey btn-xs">
 														<i class="ace-icon fa fa-print bigger-100"></i>
 														Show
@@ -114,78 +96,63 @@
 
 											</div>
 										</div>
-										<br>
 										<div id="topo-body">
-
-											<!-- <div id="topo-function" class="col-sm-1" style="height:400px">
-												<div data-toggle="buttons" class="btn-group"  align="center" >
-													<label id="topo-pointer-button" class="btn btn-grey btn-default btn-round active" style="width: 90%">
-														<input name="function-button" type="radio" value="pointer">
-														<i class="ace-icon icon-only fa fa-mouse-pointer fa-2x  fa-fw"></i><br>
-														Pointer
-													</label>
-													<label id="topo-firewall-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
-														<input name="function-button" type="radio" value="firewall">
-														<i class="ace-icon icon-only fa fa-calendar fa-2x  fa-fw"></i><br>
-														Firewall
-													</label>
-													<label id="topo-network-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
-														<input name="function-button" type="radio" value="network">
-														<i class="ace-icon icon-only fa fa-cloud fa-2x  fa-fw"></i><br>
-														Netwok
-													</label>
-													<label id="topo-link-button" class="btn btn-grey btn-default btn-round" style="width: 90%">
-														<input name="function-button" type="radio" value="link">
-														<i class="ace-icon icon-only fa fa-arrows-h fa-2x  fa-fw"></i><br>
-														Link
-													</label>
-												</div>
-											</div> -->
-
 											<div id="topo-function" class="col-sm-1" style="height:400px">
 												<div data-toggle="buttons" class="btn-group"  align="center" >
-
 													<label id="topo-pointer-button" class="btn btn-grey btn-light mybutton btn-round active">
 														<input name="function-button" type="radio" value="pointer">
 														<i class="ace-icon icon-only fa fa-mouse-pointer fa-2x  fa-fw"></i><br>
 														Pointer
 													</label>
-
 													<label id="topo-firewall-button" class="btn btn-grey mybutton btn-round">
 														<input name="function-button" type="radio" value="firewall">
 														<i class="ace-icon icon-only fa fa-calendar fa-2x  fa-fw"></i><br>
 														Firewall
 													</label>
-
 													<label id="topo-network-button" class="btn btn-grey mybutton btn-round">
 														<input name="function-button" type="radio" value="network">
 														<i class="ace-icon icon-only fa fa-cloud fa-2x  fa-fw"></i><br>
 														Netwok
 													</label>
-
 													<label id="topo-link-button" class="btn btn-grey mybutton btn-round">
 														<input name="function-button" type="radio" value="link">
 														<i class="ace-icon icon-only fa fa-arrows-h fa-2x  fa-fw"></i><br>
 														Link
 													</label>
-
 												</div>
 											</div>
-
 											<div id="topo-diagram" class="col-sm-10 widget-box" style="height:400px"></div>
-											
 											<div class="col-sm-1" style="height:400px">
-												
-												<button id="inspect-button" class="btn btn-app btn-grey btn-xs ">
-													<i class="ace-icon fa fa-caret-square-o-right bigger-160"></i>Inspect
+												<button id="project-load-button" class="btn btn-app btn-grey btn-xs">
+													<i class="ace-icon fa fa-file-text-o bigger-100"></i>
+													Load
 												</button>
-
+												<div class="space-4"></div>
+												<button id="project-save-button" class="btn btn-app btn-grey btn-xs">
+													<i class="ace-icon fa fa-floppy-o bigger-100"></i>
+													Save
+												</button>
+												<div class="space-4"></div>
+												<button id="clear-button" class="btn btn-app btn-grey btn-xs">
+													<i class="ace-icon" style="font-size: 0.8em">
+														<span class="fa-stack">
+															<i class="fa fa-file-o fa-stack-2x"></i>
+															<i class="fa fa-times fa-stack-2x"></i>
+														</span>
+													</i>
+													Clear
+												</button>
+												<div class="space-20"></div>
+												<button id="inspect-button" class="btn btn-app btn-grey btn-xs ">
+													<i class="ace-icon fa fa-caret-square-o-right bigger-160"></i>
+													Inspect
+												</button>
 											</div>
-
 										</div>
 									</div>
-									
 								</div>
+
+
 								<div id="page-body" class="hidden">
 									<div class="row">
 										<div class="col-xs-12">
@@ -205,28 +172,11 @@
 											</div>	
 										</div>
 									</div>
-									
 								</div>
 
-								<div class="row">
-									<div class="col-xs-12">
-										<button id="add-test" class="btn">+</button>
-										<button id="red-test" class="btn">-</button>
-										<button id="show-test" class="btn">Show</button>
-									</div>
-								</div>
+
+
 								
-
-
-								<!-- <button class="btn btn-app btn-grey btn-xs">
-									<i class="ace-icon" style="font-size: 0.8em">
-										<span class="fa-stack">
-											<i class="fa fa-file-o fa-stack-2x"></i>
-											<i class="fa fa-times fa-stack-2x"></i>
-										</span>
-									</i>
-									Show
-								</button> -->
 
 
 								<!-- PAGE CONTENT ENDS -->
@@ -273,10 +223,18 @@
 		<script src="assets/js/jquery.flot.pie.min.js"></script>
 		<script src="assets/js/jquery.flot.resize.min.js"></script>
 		<script src="assets/js/spinbox.min.js"></script>
+		<script src="assets/js/tree.min.js"></script>
 
 		<!-- ace scripts -->
 		<script src="assets/js/ace-elements.min.js"></script>
 		<script src="assets/js/ace.min.js"></script>
+
+		<!-- shieldui-treeview scripts -->
+        <script src="assets/js/shieldui-core.min.js"></script>
+        <script src="assets/js/shieldui-input.min.js"></script>
+        <script src="assets/js/shieldui-treeview.min.js"></script>
+
+
 
 		<!-- inline scripts related to this page -->
 		<!-- <script src="assets/plugins/fileinput/js/fileinput.min.js"></script> -->

@@ -528,6 +528,7 @@ function exchangeRuleList ( dataList ) {
 		let data = dataList[dataCount];
 		let newData = new RuleObject(data['listOrder'], data['interface'], data['in_out'], data['dest_ip'], data['src_ip'], data['protocol'], data['dest_port'], data['src_port'], data['tcp_flags'], data['action'], true);
 		newData['nodeName'] = data['nodeName'];
+		newData['ruleOrder'] = data['ruleOrder'];
 		newDataList.push(newData);
 	}
 	return newDataList;
