@@ -692,7 +692,9 @@ $('button[id="inspect-button"]').attr('type', 'button').on('click', function () 
 								let io = hop.in_out;
 								route[`${fw}_${eth}_${io}`] = route[`${fw}_${eth}_${io}`] || { ruleList: [] };
 							});
-							flagRoute['false'].push(route);
+							if ( !checkElementIsExistInArray(route, flagRoute['false']) ) {
+								flagRoute['false'].push(route);
+							}
 						});
 					}
 				});
@@ -708,7 +710,9 @@ $('button[id="inspect-button"]').attr('type', 'button').on('click', function () 
 								let io = hop.in_out;
 								route[`${fw}_${eth}_${io}`] = route[`${fw}_${eth}_${io}`] || { ruleList: [] };
 							});
-							flagRoute['true'].push(route);
+							if ( !checkElementIsExistInArray(route, flagRoute['true']) ) {
+								flagRoute['true'].push(route);
+							}
 						});
 					}
 				});
@@ -1035,7 +1039,7 @@ function createAnomalyChart ( event ) {
 	// console.log(this.index, this, block);
 	console.log(this.index, block);
 
-
+	$.gritter.removeAll();
 	$(`#tab-${nodeName} div#block-content`).empty();
 	let $chart = fs.readFileSync(`${__dirname}/templates/block-information.html`, 'utf-8').toString();
 	$($chart).appendTo(`#tab-${nodeName} div#block-content`);
@@ -1117,7 +1121,10 @@ function createAnomalyChart ( event ) {
 									$(ruleTD).appendTo(ruleTR);
 								}
 							} else {
-								ruleTD = `<td style="background-color: ${ruleColor}">${rule.ruleOrder}</td>`;
+								ruleTD = `<td style="background-color: ${ruleColor}">
+								<a class="show-rule-btn" title="Click to show rule detial">
+								<label>${rule.ruleOrder}</label>
+								</a></td>`;
 								$(ruleTD).appendTo(ruleTR);
 							}
 						}
@@ -1130,29 +1137,101 @@ function createAnomalyChart ( event ) {
 		});
 	});
 
-	for (let i=0; i<10; i++) {
+	for (let i=0; i<1; i++) {
 		$(`#tab-${nodeName} span#span-left`).each(function ( idx ) {
 			if ( (idx % 2) === 0 ) {
-				$(this).append(`<i class="ace-icon fa fa-long-arrow-right"></i>`);
+				$(this).append(`<i class="ace-icon fa fa-arrow-right"></i>`);
 			} else {
-				$(this).append(`<i class="ace-icon fa fa-long-arrow-left"></i>`);
+				$(this).append(`<i class="ace-icon fa fa-arrow-left"></i>`);
 			}
 			
 		});
 		$(`#tab-${nodeName} span#span-right`).each(function ( idx ) {
 			if ( (idx % 2) === 0 ) {
-				$(this).append(`<i class="ace-icon fa fa-long-arrow-right"></i>`);
+				$(this).append(`<i class="ace-icon fa fa-arrow-right"></i>`);
 			} else {
-				$(this).append(`<i class="ace-icon fa fa-long-arrow-left"></i>`);
+				$(this).append(`<i class="ace-icon fa fa-arrow-left"></i>`);
 			}
 		});
 	}
 
-	$('.show-details-btn').on('click', function(e) {
+	$('.show-details-btn').on('click', function ( e ) {
 		// console.log('test in block');
 		e.preventDefault();
 		$(this).closest('tr').next().toggleClass('open');
 		$(this).find(ace.vars['.icon']).toggleClass('fa-plus-square-o').toggleClass('fa-minus-square-o');
+	});
+
+	$('.show-rule-btn').on('click', function(e) {
+		console.log('show-rule-btn');
+		e.preventDefault();
+		let ruleOrder = $(this).find('label').text();
+		let [fw, eth, io] = $($(this).closest('tbody')).prev().find('td')[$(this).parent()[0].cellIndex].innerHTML.split('<br>');
+		let rule = myObject['aclObject'][fw]['ruleObject'][eth][io][ruleOrder];
+		
+		let tableColor;
+		if ( rule.action === 'ACCEPT' ) {
+			tableColor = 'gritter-success';
+		} else if ( rule.action === 'DROP' ) {
+			tableColor = 'gritter-error';
+		}
+		
+		let table = [];
+		// table.push(`<tr> <td style="text-align: right">Name: </td> <td class="left">${rule.nodeName}</td> </tr>`);
+		// table.push(`<tr> <td style="text-align: right">Interface: </td> <td>${rule.interface}</td> </tr>`);
+		// table.push(`<tr> <td style="text-align: right">In/Out: </td> <td>${rule.in_out}</td> </tr>`);
+		// table.push(`<tr> <td style="text-align: right">Order: </td> <td>${rule.ruleOrder}</td> </tr>`);
+		table.push(`<tr> <td style="text-align: right">Protocol</td> <td>${rule.protocol}</td> </tr>`);
+		table.push(`<tr> <td style="text-align: right">Src IP: </td> <td>${rule.src_ip}</td> </tr>`);
+		table.push(`<tr> <td style="text-align: right">Dst IP: </td> <td>${rule.dest_ip}</td> </tr>`);
+		if ( myObject['inspInfo']['segmentMode'] ) {
+			let tcp_flags;
+			if ( rule.tcp_flags.length === 0 ) {
+				tcp_flags = 'ANY';
+			} else if ( rule.tcp_flags.length === 1 ) {
+				tcp_flags = rule.tcp_flags[0];
+			} else if ( rule.tcp_flags.length > 1 ) {
+				if ( rule.tcp_flags[0] === 'ACK' ) {
+					tcp_flags = `${rule.tcp_flags[1]}+${rule.tcp_flags[0]}`;
+				} else if ( rule.tcp_flags[1] === 'ACK' ) {
+					tcp_flags = `${rule.tcp_flags[0]}+${rule.tcp_flags[1]}`;
+				}
+			}
+			table.push(`<tr> <td style="text-align: right">TCP Flags: </td> <td>${tcp_flags}</td> </tr>`);
+		}
+		table.push(`<tr> <td style="text-align: right">Action: </td> <td>${rule.action}</td> </tr>`);
+
+
+		let data = []
+		data.push(`<div class="form-group"><label class="col-sm-4" style="text-align: right">Order:</label><label class="col-sm-8 ">${rule.ruleOrder}</label></div>`);
+		data.push(`<div class="form-group"><label class="col-sm-4" style="text-align: right">Protocol:</label><label class="col-sm-8 ">${rule.protocol}</label></div>`);
+		data.push(`<div class="form-group"><label class="col-sm-4" style="text-align: right">Src IP:</label><label class="col-sm-8 ">${rule.src_ip}</label></div>`);
+		data.push(`<div class="form-group"><label class="col-sm-4" style="text-align: right">Dst IP:</label><label class="col-sm-8 ">${rule.dest_ip}</label></div>`);
+		if ( myObject['inspInfo']['segmentMode'] ) {
+			let tcp_flags;
+			if ( rule.tcp_flags.length === 0 ) {
+				tcp_flags = 'ANY';
+			} else if ( rule.tcp_flags.length === 1 ) {
+				tcp_flags = rule.tcp_flags[0];
+			} else if ( rule.tcp_flags.length > 1 ) {
+				if ( rule.tcp_flags[0] === 'ACK' ) {
+					tcp_flags = `${rule.tcp_flags[1]}+${rule.tcp_flags[0]}`;
+				} else if ( rule.tcp_flags[1] === 'ACK' ) {
+					tcp_flags = `${rule.tcp_flags[0]}+${rule.tcp_flags[1]}`;
+				}
+			}
+			data.push(`<div class="form-group"><label class="col-sm-4" style="text-align: right">TCP flag:</label><label class="col-sm-8 ">${tcp_flags}</label></div>`);
+		}
+		data.push(`<div class="form-group"><label class="col-sm-4" style="text-align: right">Action:</label><label class="col-sm-8 ">${rule.action}</label></div>`);
+
+		$.gritter.add({
+			title: `<div class="center">${rule.nodeName} - ${rule.interface} - ${rule.in_out} - ${rule.ruleOrder}</div>`,
+			// text: `<div class="row"> <div class="col-xs-12"> <form class="form-horizontal" role="form"> ${data.join('')} </form> </div> </div>`,
+			text: `<table class="table">${table.join('')}</table>`,
+			sticky: true,
+			time: '',
+			class_name: tableColor,
+		});
 	});
 
 	// $(`#tab-${nodeName} div#anomaly-body`).accordion({ collapsible: true, heightStyle: "content", animate: 250, header: ".accordion-header"});
@@ -1326,7 +1405,7 @@ function anomalySelectHandler ( e ) {
 		$(e.element[0].firstChild.firstChild).click();
 	} else {
 		// console.log($target);
-		$('tr.open').removeClass('open');
+		$('tr.open').prev().find('a').click();
 		let targetArray = $target.split(',');
 
 		_.each(targetArray, function ( val, idx ) {
@@ -1336,58 +1415,22 @@ function anomalySelectHandler ( e ) {
 				flagKey = flagKey.split('+').join('-');
 			}
 			let targetId = `${flagKey}-${exchgKey}-${routeIdx}`;
-			console.log(targetId);
+			// console.log(targetId);
 			$(`#${targetId}`).click();
 		});
-
-
 	}
-	
-	// // console.log( $(`#${targetId}-h`).attr('aria-expanded') );
-	// // console.log( typeof $(`#${targetId}-h`).attr('aria-expanded') );
-
-
-	// if ( $(`#${targetId}-h`).attr('aria-expanded') === 'false' ) {
-	// 	$(`#${targetId}-h`).click();
-	// }
-
-
 }
 
-// $("#anomaly-tree").shieldTreeView({
-// 	// dragDrop: true,
-// 	// checkboxes: {
-// 	// 	enabled: true,
-// 	// 	children: true
-// 	// },
-// 	events: { select: anomalySelectHandler },
 
-// 	dataSource: {
-// 		data: [
-// 			{ text: 'shadowing', items: [
-// 				{ text: 'node1', items: [
-// 					{ text: 'test1', disabled: true },
-// 					{ text: 'test2' },
-// 					{ text: 'test3' }
-// 				] },
-// 				{ text: 'node2' },
-// 				{ text: 'node3' }
-// 			] },
-// 			{ text: 'redundancy' },
-// 			{ text: 'lost' },
-// 			{ text: 'conflict' }
-// 		]
-// 	}
-// 	// dataSource : {
-// 	// 	// data: treeview_data
-// 	// }
-// });
+// $('#gritter-regular')
+$('#test-button').on('click', function(){
+	$.gritter.add({
+		title: 'This is a regular notice!',
+		text: `<table><tbody><tr><td>Src:</td><td>140.134.30.0/24</td></tr></tbody></table>`,
+		sticky: true,
+		time: '',
+		class_name: 'gritter-success'
+	});
 
-
-
-// $('.show-details-btn').on('click', function(e) {
-// 	console.log('test');
-// 	e.preventDefault();
-// 	$(this).closest('tr').next().toggleClass('open');
-// 	$(this).find(ace.vars['.icon']).toggleClass('fa-plus-square-o').toggleClass('fa-minus-square-o');
-// });
+	return false;
+});
